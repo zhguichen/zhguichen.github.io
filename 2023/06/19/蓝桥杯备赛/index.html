@@ -33,12 +33,12 @@
 
     <!-- OpenGraph -->
  
-    <meta name="description" content="注意点 cin cout 换成 scanf printf 用空间换速度：三层循环写成两层。https:&#x2F;&#x2F;www.acwing.com&#x2F;problem&#x2F;content&#x2F;1223&#x2F; scanf 读字符容易包括空格回车，所以建议直接读字符串 超过10 0000用scanf 遇到sf用exit(0)二分查找错误 整数类型大于4位用long long while(x)只是判断不等于0 &#96;&#96;">
+    <meta name="description" content="注意点 cin cout 换成 scanf printf 用空间换速度：三层循环写成两层。https:&#x2F;&#x2F;www.acwing.com&#x2F;problem&#x2F;content&#x2F;1223&#x2F; scanf 读字符容易包括空格回车，所以建议直接读字符串 超过10 0000用scanf 遇到sf用exit(0)二分查找错误 整数类型大于4位用long long while(x)只是判断不等于0 strlen(sc[">
 <meta property="og:type" content="article">
 <meta property="og:title" content="蓝桥杯备赛">
 <meta property="og:url" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/index.html">
 <meta property="og:site_name" content="Jason&#39;s Web">
-<meta property="og:description" content="注意点 cin cout 换成 scanf printf 用空间换速度：三层循环写成两层。https:&#x2F;&#x2F;www.acwing.com&#x2F;problem&#x2F;content&#x2F;1223&#x2F; scanf 读字符容易包括空格回车，所以建议直接读字符串 超过10 0000用scanf 遇到sf用exit(0)二分查找错误 整数类型大于4位用long long while(x)只是判断不等于0 &#96;&#96;">
+<meta property="og:description" content="注意点 cin cout 换成 scanf printf 用空间换速度：三层循环写成两层。https:&#x2F;&#x2F;www.acwing.com&#x2F;problem&#x2F;content&#x2F;1223&#x2F; scanf 读字符容易包括空格回车，所以建议直接读字符串 超过10 0000用scanf 遇到sf用exit(0)二分查找错误 整数类型大于4位用long long while(x)只是判断不等于0 strlen(sc[">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230113112501317-1679759988341-4.png">
 <meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230113162330767-1679759988341-5.png">
@@ -49,8 +49,10 @@
 <meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230121112608329-1679759988342-10.png">
 <meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230121145042183-1679759988342-11.png">
 <meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230121144349332-1679759988342-12.png">
+<meta property="og:image" content="http://example.com/image-20230819110352188.png">
+<meta property="og:image" content="http://example.com/image-20230819113249744.png">
 <meta property="article:published_time" content="2023-06-19T02:53:48.269Z">
-<meta property="article:modified_time" content="2023-06-19T02:53:48.269Z">
+<meta property="article:modified_time" content="2023-08-23T01:54:20.490Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230113112501317-1679759988341-4.png">
@@ -167,7 +169,7 @@
 <article class="post content-card">
     <div class="post__header"></div>
     <div class="post__content">
-        <h1 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h1><ul>
+        <h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><ul>
 <li>cin cout 换成 scanf printf</li>
 <li>用空间换速度：三层循环写成两层。<a target="_blank" rel="noopener" href="https://www.acwing.com/problem/content/1223/">https://www.acwing.com/problem/content/1223/</a></li>
 <li>scanf 读字符容易包括空格回车，所以建议直接读字符串</li>
@@ -175,23 +177,28 @@
 <li>遇到sf用exit(0)二分查找错误</li>
 <li>整数类型大于4位用long long</li>
 <li>while(x)只是判断不等于0</li>
-<li>&#96;&#96;&#96;cpp<br>#define x first<br>#define y second<br>typedef pair&lt;int,int&gt; PII<br>PII a[100];<br>a[1] &#x3D; {1,2}<br>makepair<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- </span><br><span class="line"></span><br><span class="line">![image-20230119105851793](image-20230119105851793-1679759988341-3.png)</span><br><span class="line"></span><br><span class="line"># &lt; algorithm &gt;中的函数</span><br><span class="line"></span><br><span class="line">```cpp</span><br><span class="line">sort(a+1,a+n+1); 起始位置到终点位置。常与pair进行联合使用，先排pair的first再排pair的second</span><br></pre></td></tr></table></figure></li>
+<li>strlen(sc[i]+1)若字符串从第一个位置开始</li>
+<li>&#96;&#96;&#96;cpp<br>#define x first<br>#define y second<br>typedef pair&lt;int,int&gt; PII<br>PII a[100];<br>a[1] &#x3D; {1,2}<br>makepair<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- </span><br><span class="line"></span><br><span class="line">![image-20230119105851793](image-20230119105851793-1679759988341-3.png)</span><br><span class="line"></span><br><span class="line">## 函数</span><br><span class="line"></span><br><span class="line">### &lt; algorithm &gt;中的函数</span><br><span class="line"></span><br><span class="line">```cpp</span><br><span class="line">sort(a+1,a+n+1); 起始位置到终点位置。常与pair进行联合使用，先排pair的first再排pair的second</span><br></pre></td></tr></table></figure></li>
 </ul>
-<h1 id="lt-sstream-gt"><a href="#lt-sstream-gt" class="headerlink" title="&lt; sstream &gt;"></a>&lt; sstream &gt;</h1><ul>
+<h3 id="lt-sstream-gt"><a href="#lt-sstream-gt" class="headerlink" title="&lt; sstream &gt;"></a>&lt; sstream &gt;</h3><ul>
 <li>getline()</li>
 </ul>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">string line;</span><br><span class="line"><span class="built_in">getline</span>(cin, line); <span class="comment">// 忽略掉第一行的回车</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">getline</span>(cin,line);  <span class="comment">//从标准输入流（即键盘）读取一行字符串，并将其存储到变量 line 中。在读取这一行时，以换行符为行的结束标志。</span></span><br><span class="line"><span class="function">stringstream <span class="title">ssin</span><span class="params">(line)</span></span>; <span class="comment">//把line放进流里(stringstream是C++中定义的一个类，代表了一个输入输出流)</span></span><br><span class="line"><span class="keyword">while</span> (ssin &gt;&gt; a[n]) n ++ ; <span class="comment">//用输入流提取运算符将流中内容存入a[n]</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="lt-string-h-gt"><a href="#lt-string-h-gt" class="headerlink" title="&lt;string.h&gt;"></a>&lt;string.h&gt;</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> *<span class="title">memset</span><span class="params">(<span class="type">void</span> *str, <span class="type">int</span> c, <span class="type">size_t</span> n)</span>   </span></span><br></pre></td></tr></table></figure>
+<h3 id="lt-string-h-gt"><a href="#lt-string-h-gt" class="headerlink" title="&lt;string.h&gt;"></a>&lt;string.h&gt;</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> *<span class="title">memset</span><span class="params">(<span class="type">void</span> *str, <span class="type">int</span> c, <span class="type">size_t</span> n)</span>   </span></span><br></pre></td></tr></table></figure>
 
-<h1 id="lt-queue-gt"><a href="#lt-queue-gt" class="headerlink" title="&lt; queue &gt;"></a>&lt; queue &gt;</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">升序队列，小根堆</span><br><span class="line">priority_queue &lt;<span class="type">int</span>,vector&lt;<span class="type">int</span>&gt;,greater&lt;<span class="type">int</span>&gt;&gt; q;</span><br><span class="line">priority_queue &lt;<span class="type">int</span>,vector&lt;<span class="type">int</span>&gt;,greater&lt;<span class="type">int</span>&gt;&gt; q;</span><br></pre></td></tr></table></figure>
-
-
+<h3 id="lt-queue-gt"><a href="#lt-queue-gt" class="headerlink" title="&lt; queue &gt;"></a>&lt; queue &gt;</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">升序队列，小根堆</span><br><span class="line">priority_queue &lt;<span class="type">int</span>,vector&lt;<span class="type">int</span>&gt;,greater&lt;<span class="type">int</span>&gt;&gt; q;</span><br><span class="line">priority_queue &lt;<span class="type">int</span>,vector&lt;<span class="type">int</span>&gt;,greater&lt;<span class="type">int</span>&gt;&gt; q;</span><br></pre></td></tr></table></figure>
 
 
-<h1 id="所有区间i"><a href="#所有区间i" class="headerlink" title="所有区间i"></a>所有区间i</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">       <span class="keyword">for</span>(<span class="type">int</span> j = i; j &lt;= n; j++)</span><br></pre></td></tr></table></figure>
 
-<h1 id="取整"><a href="#取整" class="headerlink" title="取整"></a>取整</h1><h2 id="上取整"><a href="#上取整" class="headerlink" title="上取整"></a>上取整</h2><ol>
+
+<h2 id="所有区间的i"><a href="#所有区间的i" class="headerlink" title="所有区间的i"></a>所有区间的i</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">       <span class="keyword">for</span>(<span class="type">int</span> j = i; j &lt;= n; j++)</span><br></pre></td></tr></table></figure>
+
+<h2 id="所有区间段"><a href="#所有区间段" class="headerlink" title="所有区间段"></a>所有区间段</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> len = <span class="number">2</span>; len &lt;= n; len++)</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i + len + <span class="number">-1</span> &lt;= n; i++)</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="type">int</span> j = i + len - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> k = i; k &lt; j; k++)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="取整"><a href="#取整" class="headerlink" title="取整"></a>取整</h2><h2 id="上取整"><a href="#上取整" class="headerlink" title="上取整"></a>上取整</h2><ol>
 <li>int(ceil()) &#x2F;&#x2F;ceil 返回double 类型   &lt; cmath&gt;</li>
 <li>a mod b &#x3D; (a + b - 1) &#x2F; b &#x3D; (a - 1) &#x2F; b + 1</li>
 </ol>
@@ -277,10 +284,43 @@
 <ul>
 <li>a, b的最大不能组成的数：(a - 1) * (b - 1) - 1</li>
 </ul>
-<h1 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h1><h2 id="背包问题——最值、个数"><a href="#背包问题——最值、个数" class="headerlink" title="背包问题——最值、个数"></a>背包问题——最值、个数</h2><ul>
+<h1 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h1><blockquote>
+<p>dp分析法：</p>
+<ol>
+<li><p>状态表示 </p>
+<p>集合：</p>
+<p>属性：最大值，最小值，数量</p>
+</li>
+<li><p>状态</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="背包问题——最值、个数"><a href="#背包问题——最值、个数" class="headerlink" title="背包问题——最值、个数"></a>背包问题——最值、个数</h2><ul>
 <li>没有固定模板，核心在于状态表示和转移。</li>
+<li>0-1背包：物品只能选一次。一维二层枚举需逆序，因为f[ j ]需由f[ i-1 ][ j ]状态更新而来。</li>
 </ul>
-<h1 id="递归和递推"><a href="#递归和递推" class="headerlink" title="递归和递推"></a>递归和递推</h1><ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f[i][j] = max(f[i-1][j], f[i-1][j-v) + w) // 二维</span><br><span class="line">f[j] = max(f[j],f[j-v] + w) //一维</span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li>完全背包：物品可以用无数次。</li>
+</ul>
+<p><img src="/image-20230819110352188.png" alt="image-20230819110352188"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f[i][j] = max(f[i-1][j], f[i][j-v) + w) // 二维</span><br><span class="line">f[j] = max(f[j],f[j-v] + w) //一维，二层循环不用逆序</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>多重背包：物品可以一次或多次。</li>
+</ul>
+<p>法一：将多重背包拆解成01背包</p>
+<p>法二：当数据量大，需通过二进制优化。</p>
+<p>二进制优化：最少用几个数能表示小于等于k的所有数。可以将一个数拆成几个数，把一个问题拆成logn。</p>
+<ul>
+<li><p>分组背包：每一组选一个，最后可看成0-1背包问题</p>
+<p><img src="/image-20230819113249744.png" alt="image-20230819113249744"></p>
+</li>
+</ul>
+<h2 id="背包问题参考https-blog-csdn-net-raelum-article-details-128996521"><a href="#背包问题参考https-blog-csdn-net-raelum-article-details-128996521" class="headerlink" title="背包问题参考https://blog.csdn.net/raelum/article/details/128996521"></a>背包问题参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/raelum/article/details/128996521">https://blog.csdn.net/raelum/article/details/128996521</a></h2><h2 id="数位统计——-x3D-x3D-分情况讨论-x3D-x3D"><a href="#数位统计——-x3D-x3D-分情况讨论-x3D-x3D" class="headerlink" title="数位统计——&#x3D;&#x3D;分情况讨论&#x3D;&#x3D;"></a>数位统计——&#x3D;&#x3D;分情况讨论&#x3D;&#x3D;</h2><h1 id="递归和递推"><a href="#递归和递推" class="headerlink" title="递归和递推"></a>递归和递推</h1><ul>
 <li>递归将问题分为子问题</li>
 <li>递推由子问题推</li>
 </ul>
@@ -305,7 +345,7 @@
 
     </div>
      
-    <div class="post-footer__meta"><p>updated at 2023-06-19</p></div> 
+    <div class="post-footer__meta"><p>updated at 2023-08-23</p></div> 
     <div class="post-entry__tags"></div> 
 </article>
 
