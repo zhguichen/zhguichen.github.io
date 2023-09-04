@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+    
+    
+    
+    
+
+
+    <!-- meta -->
+
+
+<title>算法竞赛学习 | Jason&#39;s Web</title>
+
+
+    <meta name="keywords" content="算法竞赛">
+
+
+
+
+    <!-- OpenGraph -->
+ 
+    <meta name="description" content="注意点 cin cout 换成 scanf printf 用空间换速度：三层循环写成两层。https:&#x2F;&#x2F;www.acwing.com&#x2F;problem&#x2F;content&#x2F;1223&#x2F; scanf 读字符容易包括空格回车，所以建议直接读字符串 超过10 0000用scanf 遇到sf用exit(0)二分查找错误 整数类型大于4位用long long while(x)只是判断不等于0 strlen(sc[">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法竞赛学习">
+<meta property="og:url" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/index.html">
+<meta property="og:site_name" content="Jason&#39;s Web">
+<meta property="og:description" content="注意点 cin cout 换成 scanf printf 用空间换速度：三层循环写成两层。https:&#x2F;&#x2F;www.acwing.com&#x2F;problem&#x2F;content&#x2F;1223&#x2F; scanf 读字符容易包括空格回车，所以建议直接读字符串 超过10 0000用scanf 遇到sf用exit(0)二分查找错误 整数类型大于4位用long long while(x)只是判断不等于0 strlen(sc[">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230113112501317-1679759988341-4.png">
+<meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230113162330767-1679759988341-5.png">
+<meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230118155655247-1679759988341-6.png">
+<meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230119210729500-1679759988341-7.png">
+<meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230119210750851-1679759988341-8.png">
+<meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230120220047920-1679759988342-9.png">
+<meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230121112608329-1679759988342-10.png">
+<meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230121145042183-1679759988342-11.png">
+<meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230121144349332-1679759988342-12.png">
+<meta property="og:image" content="http://example.com/image-20230819110352188.png">
+<meta property="og:image" content="http://example.com/image-20230819113249744.png">
+<meta property="article:published_time" content="2023-06-19T02:53:48.269Z">
+<meta property="article:modified_time" content="2023-09-03T08:36:45.248Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="算法竞赛">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230113112501317-1679759988341-4.png">
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="/css/highlight/default.css" media="none" >
+        
+            <link rel="stylesheet" id="hl-dark-theme" href="/css/highlight/dark.css" media="none">
+        
+    
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/style/dark.css">
+
+    
+<script src="/js/darkmode.js"></script>
+
+
+
+     
+
+    <!-- custom head -->
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <body>
+        <div id="app" tabindex="-1">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">主页</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首页</a>
+                
+                    <a href="/tags/" class="navbar-menu button">标签</a>
+                
+                    <a href="/archives/" class="navbar-menu button">归档</a>
+                
+                    <a href="/categories" class="navbar-menu button">分类</a>
+                
+                    <a href="/page/" class="navbar-menu button">Page</a>
+                
+            </div>
+        
+        
+        
+
+        
+        
+    <a href="javaScript:void(0);" id="btn-toggle-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </a>
+
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首页</a>
+                
+                    <a href="/tags/" class="dropdown-menu button">标签</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">归档</a>
+                
+                    <a href="/categories" class="dropdown-menu button">分类</a>
+                
+                    <a href="/page/" class="dropdown-menu button">Page</a>
+                
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        算法竞赛学习
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2023/06/" class="post-meta__date button">2023-06-19</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+
+<article class="post content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><ul>
+<li>cin cout 换成 scanf printf</li>
+<li>用空间换速度：三层循环写成两层。<a target="_blank" rel="noopener" href="https://www.acwing.com/problem/content/1223/">https://www.acwing.com/problem/content/1223/</a></li>
+<li>scanf 读字符容易包括空格回车，所以建议直接读字符串</li>
+<li>超过10 0000用scanf</li>
+<li>遇到sf用exit(0)二分查找错误</li>
+<li>整数类型大于4位用long long</li>
+<li>while(x)只是判断不等于0</li>
+<li>strlen(sc[i]+1)若字符串从第一个位置开始</li>
+<li>&#96;&#96;&#96;cpp<br>#define x first<br>#define y second<br>typedef pair&lt;int,int&gt; PII<br>PII a[100];<br>a[1] &#x3D; {1,2}<br>makepair<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">- </span><br><span class="line"></span><br><span class="line">![image-20230119105851793](image-20230119105851793-1679759988341-3.png)</span><br><span class="line"></span><br><span class="line">## 函数</span><br><span class="line"></span><br><span class="line">### &lt; algorithm &gt;中的函数</span><br><span class="line"></span><br><span class="line">```cpp</span><br><span class="line">sort(a+1,a+n+1); 起始位置到终点位置。常与pair进行联合使用，先排pair的first再排pair的second</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="lt-sstream-gt"><a href="#lt-sstream-gt" class="headerlink" title="&lt; sstream &gt;"></a>&lt; sstream &gt;</h3><ul>
+<li>getline()</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">string line;</span><br><span class="line"><span class="built_in">getline</span>(cin, line); <span class="comment">// 忽略掉第一行的回车</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">getline</span>(cin,line);  <span class="comment">//从标准输入流（即键盘）读取一行字符串，并将其存储到变量 line 中。在读取这一行时，以换行符为行的结束标志。</span></span><br><span class="line"><span class="function">stringstream <span class="title">ssin</span><span class="params">(line)</span></span>; <span class="comment">//把line放进流里(stringstream是C++中定义的一个类，代表了一个输入输出流)</span></span><br><span class="line"><span class="keyword">while</span> (ssin &gt;&gt; a[n]) n ++ ; <span class="comment">//用输入流提取运算符将流中内容存入a[n]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="lt-string-h-gt"><a href="#lt-string-h-gt" class="headerlink" title="&lt;string.h&gt;"></a>&lt;string.h&gt;</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> *<span class="title">memset</span><span class="params">(<span class="type">void</span> *str, <span class="type">int</span> c, <span class="type">size_t</span> n)</span>   </span></span><br></pre></td></tr></table></figure>
+
+<h3 id="lt-queue-gt"><a href="#lt-queue-gt" class="headerlink" title="&lt; queue &gt;"></a>&lt; queue &gt;</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">升序队列，小根堆</span><br><span class="line">priority_queue &lt;<span class="type">int</span>,vector&lt;<span class="type">int</span>&gt;,greater&lt;<span class="type">int</span>&gt;&gt; q;</span><br><span class="line">priority_queue &lt;<span class="type">int</span>,vector&lt;<span class="type">int</span>&gt;,greater&lt;<span class="type">int</span>&gt;&gt; q;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<h2 id="所有区间的i"><a href="#所有区间的i" class="headerlink" title="所有区间的i"></a>所有区间的i</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++)</span><br><span class="line">       <span class="keyword">for</span>(<span class="type">int</span> j = i; j &lt;= n; j++)</span><br></pre></td></tr></table></figure>
+
+<h2 id="所有区间段"><a href="#所有区间段" class="headerlink" title="所有区间段"></a>所有区间段</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> len = <span class="number">2</span>; len &lt;= n; len++)</span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i + len + <span class="number">-1</span> &lt;= n; i++)</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="type">int</span> j = i + len - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> k = i; k &lt; j; k++)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="取整"><a href="#取整" class="headerlink" title="取整"></a>取整</h2><h3 id="上取整"><a href="#上取整" class="headerlink" title="上取整"></a>上取整</h3><ol>
+<li>int(ceil()) &#x2F;&#x2F;ceil 返回double 类型   &lt; cmath&gt;</li>
+<li>a mod b &#x3D; (a + b - 1) &#x2F; b &#x3D; (a - 1) &#x2F; b + 1</li>
+</ol>
+<h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><p><img src="/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230113112501317-1679759988341-4.png" alt="image-20230113112501317"></p>
+<blockquote>
+<p> <a target="_blank" rel="noopener" href="https://www.zhihu.com/search?type=content&q=%20%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F">https://www.zhihu.com/search?type=content&amp;q=%20%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F</a></p>
+<p> 这个和Y总的代码实现不同，但思维是相通的</p>
+</blockquote>
+<ul>
+<li>当边界用i，边界点不能取q[l],例[0,1]会出现死循环</li>
+<li>当边界用j，边界点不能取q[r],例[0,1]会出现死循环</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">quick_sort</span><span class="params">(<span class="type">int</span> q[], <span class="type">int</span> l, <span class="type">int</span> r)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (l &gt;= r) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> i = l - <span class="number">1</span>, j = r + <span class="number">1</span>, x = q[l + r &gt;&gt; <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">while</span> (i &lt; j)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">do</span> i ++ ; <span class="keyword">while</span> (q[i] &lt; x);</span><br><span class="line">        <span class="keyword">do</span> j -- ; <span class="keyword">while</span> (q[j] &gt; x);</span><br><span class="line">        <span class="keyword">if</span> (i &lt; j) <span class="built_in">swap</span>(q[i], q[j]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">quick_sort</span>(q, l, j), <span class="built_in">quick_sort</span>(q, j + <span class="number">1</span>, r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><p><img src="/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230113162330767-1679759988341-5.png" alt="image-20230113162330767"></p>
+<hr>
+<ul>
+<li>对比</li>
+</ul>
+<h2 id="二分和前缀和"><a href="#二分和前缀和" class="headerlink" title="二分和前缀和"></a>二分和前缀和</h2><h3 id="整数二分"><a href="#整数二分" class="headerlink" title="整数二分"></a>整数二分</h3><ul>
+<li>mid &#x3D; (l + r + 1) &#x2F; 2  ，若 mid &#x3D; (l + r) &#x2F; 2 有边界问题：若 l &#x3D; r - 1，mid &#x3D; l，边界还是 l 和 r 出现死循环。</li>
+<li>mid &#x3D; (l + r + 1) &#x2F; 2 取上界，mid &#x3D; (l + r) &#x2F; 2 取下界。</li>
+</ul>
+<p><img src="/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230118155655247-1679759988341-6.png" alt="image-20230118155655247"></p>
+<h3 id="实数二分"><a href="#实数二分" class="headerlink" title="实数二分"></a>实数二分</h3><ul>
+<li>不用考虑边界</li>
+</ul>
+<hr>
+<h3 id="前缀和"><a href="#前缀和" class="headerlink" title="前缀和"></a>前缀和</h3><ul>
+<li>预处理：用数组纪录和<br><a target="_blank" rel="noopener" href="https://www.acwing.com/problem/content/797/">https://www.acwing.com/problem/content/797/</a></li>
+<li>若空间不够，原数组可省略，只用前缀和数组</li>
+</ul>
+<p><img src="/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230119210729500-1679759988341-7.png" alt="image-20230119210729500"></p>
+<p><img src="/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230119210750851-1679759988341-8.png" alt="image-20230119210750851"></p>
+<h3 id="KMP"><a href="#KMP" class="headerlink" title="KMP"></a>KMP</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// s[]是长文本，p[]是模式串，n是s的长度，m是p的长度</span></span><br><span class="line">求模式串的Next数组：</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">2</span>, j = <span class="number">0</span>; i &lt;= m; i ++ )</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (j &amp;&amp; p[i] != p[j + <span class="number">1</span>]) j = ne[j];</span><br><span class="line">    <span class="keyword">if</span> (p[i] == p[j + <span class="number">1</span>]) j ++ ;</span><br><span class="line">    ne[i] = j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 匹配</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>, j = <span class="number">0</span>; i &lt;= n; i ++ )</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (j &amp;&amp; s[i] != p[j + <span class="number">1</span>]) j = ne[j];</span><br><span class="line">    <span class="keyword">if</span> (s[i] == p[j + <span class="number">1</span>]) j ++ ;</span><br><span class="line">    <span class="keyword">if</span> (j == m)</span><br><span class="line">    &#123;</span><br><span class="line">        j = ne[j];</span><br><span class="line">        <span class="comment">// 匹配成功后的逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Trie"><a href="#Trie" class="headerlink" title="Trie"></a>Trie</h3><blockquote>
+<p>高效存储和查找字符串集合的数据结构 </p>
+</blockquote>
+<p>题目限制一般在26个字母</p>
+<p><img src="/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230120220047920-1679759988342-9.png" alt="image-20230120220047920"></p>
+<h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">insert</span><span class="params">(<span class="type">char</span> *str)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> p = <span class="number">0</span>;  <span class="comment">//类似指针，指向当前节点</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; str[i]; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> u = str[i] - <span class="string">&#x27;a&#x27;</span>; <span class="comment">//将字母转化为数字</span></span><br><span class="line">        <span class="keyword">if</span>(!son[p][u]) son[p][u] = ++idx;</span><br><span class="line">        <span class="comment">//该节点不存在，创建节点,其值为下一个节点位置</span></span><br><span class="line">        p = son[p][u];  <span class="comment">//使“p指针”指向下一个节点位置</span></span><br><span class="line">    &#125;</span><br><span class="line">    cnt[p]++;  <span class="comment">//结束时的标记，也是记录以此节点结束的字符串个数</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">query</span><span class="params">(<span class="type">char</span> *str)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> p = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; str[i]; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">int</span> u = str[i] - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">        <span class="keyword">if</span>(!son[p][u]) <span class="keyword">return</span> <span class="number">0</span>;  <span class="comment">//该节点不存在，即该字符串不存在</span></span><br><span class="line">        p = son[p][u]; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> cnt[p];  <span class="comment">//返回字符串出现的次数</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="并查集"><a href="#并查集" class="headerlink" title="并查集"></a>并查集</h2><blockquote>
+<p>将两个集合合并hi</p>
+<p>询问两个元素是否在一个集合当中</p>
+</blockquote>
+<ul>
+<li><p>原理：每个集合用一棵树来表示。树根的编号就是整个集合的编号。每个节点存储它的父节点，p[x]表示x的父节点。</p>
+<p><img src="/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230121112608329-1679759988342-10.png" alt="image-20230121112608329"></p>
+</li>
+<li><p>变形：找到需要维护的变量</p>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">find</span><span class="params">(<span class="type">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(p[x] != x) p[x] = <span class="built_in">find</span>(p[x]);  <span class="comment">//find 函数不仅有找祖宗的功能，还把这个查找路径上所有节点直接变成了祖宗节点的孩子，即路径压缩</span></span><br><span class="line">    <span class="keyword">return</span> p[x];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p><img src="/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230121145042183-1679759988342-11.png" alt="image-20230121145042183"></p>
+<ul>
+<li>完全二叉树：除了最后一层节点，上面所有节点都是满的，最后节点从左到右排列。</li>
+<li>小根堆：每个点小于等与左右儿子，所以根节点是最小值。</li>
+<li>存储；down(X); up(x);<br><img src="/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230121144349332-1679759988342-12.png" alt="image-20230121144349332"></li>
+</ul>
+<blockquote>
+<p>为什么从2&#x2F;n开始down?</p>
+<p>因为n是最大值，n&#x2F;2是n的父节点，因为n是最大，所以n&#x2F;2是最大的有子节点的父节点，所以从n&#x2F;2往前遍历，就可以把整个数组遍历一遍</p>
+</blockquote>
+<ul>
+<li><p>理解heap_swap中的次序</p>
+<p>房间a中放有元素10，房间b中放油元素20。</p>
+<p>10（犯人1）是第一个插入的，20（犯人二）是第二个插入的。</p>
+<p>h[a] &#x3D; 10, h[b] &#x3D; 20 swap: h[a] &#x3D; 20,h [b] &#x3D; 10<br>hp[a] &#x3D; 1 ,hp[b] &#x3D; 2 swap:hp[a] &#x3D; 2 ,hp[b] &#x3D; 1<br>ph[1] &#x3D; a ,ph[2] &#x3D; b swap:ph[1] &#x3D; b ,ph[2] &#x3D; a</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">heap_swap</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">swap</span>(ph[hp[a]],ph[hp[b]]);</span><br><span class="line">    <span class="built_in">swap</span>(hp[a], hp[b]);</span><br><span class="line">    <span class="built_in">swap</span>(h[a], h[b]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">down</span><span class="params">(<span class="type">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> t = u;</span><br><span class="line">    <span class="keyword">if</span> (u * <span class="number">2</span> &lt;= cnt &amp;&amp; h[u * <span class="number">2</span>] &lt; h[t]) t = u * <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span> (u * <span class="number">2</span> + <span class="number">1</span> &lt;= cnt &amp;&amp; h[u * <span class="number">2</span> + <span class="number">1</span>] &lt; h[t]) t = u * <span class="number">2</span> + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (u != t)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">heap_swap</span>(u, t);</span><br><span class="line">        <span class="built_in">down</span>(t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">up</span><span class="params">(<span class="type">int</span> u)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (u / <span class="number">2</span> &amp;&amp; h[u] &lt; h[u / <span class="number">2</span>])</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">heap_swap</span>(u, u / <span class="number">2</span>);</span><br><span class="line">        u &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="数学问题"><a href="#数学问题" class="headerlink" title="数学问题"></a>数学问题</h2><ol>
+<li>尽力分析</li>
+<li>打表找规律  用dfs</li>
+</ol>
+<ul>
+<li>a, b的最大不能组成的数：(a - 1) * (b - 1) - 1</li>
+</ul>
+<h2 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h2><blockquote>
+<p>dp分析法：</p>
+<ol>
+<li><p>状态表示 </p>
+<p>集合：不重不漏</p>
+<p>属性：最大值，最小值，数量</p>
+</li>
+<li><p>状态计算：用集合表示，不重不漏</p>
+</li>
+</ol>
+</blockquote>
+<h3 id="背包问题——最值、个数"><a href="#背包问题——最值、个数" class="headerlink" title="背包问题——最值、个数"></a>背包问题——最值、个数</h3><ul>
+<li>没有固定模板，核心在于状态表示和转移。</li>
+<li>0-1背包：物品只能选一次。一维二层枚举需逆序，因为f[ j ]需由f[ i-1 ][ j ]状态更新而来。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f[i][j] = max(f[i-1][j], f[i-1][j-v) + w) // 二维</span><br><span class="line">f[j] = max(f[j],f[j-v] + w) //一维</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>完全背包：物品可以用无数次。</li>
+</ul>
+<p><img src="/image-20230819110352188.png" alt="image-20230819110352188"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f[i][j] = max(f[i-1][j], f[i][j-v) + w) // 二维</span><br><span class="line">f[j] = max(f[j],f[j-v] + w) //一维，二层循环不用逆序</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>多重背包：物品可以一次或多次。</li>
+</ul>
+<p>法一：将多重背包拆解成01背包</p>
+<p>法二：当数据量大，需通过二进制优化。</p>
+<p>二进制优化：最少用几个数能表示小于等于k的所有数。可以将一个数拆成几个数，把一个问题拆成logn。</p>
+<ul>
+<li><p>分组背包：每一组选一个，最后可看成0-1背包问题</p>
+<p><img src="/image-20230819113249744.png" alt="image-20230819113249744"></p>
+</li>
+</ul>
+<blockquote>
+<p>背包问题参考 <a target="_blank" rel="noopener" href="https://blog.csdn.net/raelum/article/details/128996521">https://blog.csdn.net/raelum/article/details/128996521</a></p>
+</blockquote>
+<h2 id="数位统计——-x3D-x3D-分情况讨论-x3D-x3D"><a href="#数位统计——-x3D-x3D-分情况讨论-x3D-x3D" class="headerlink" title="数位统计——&#x3D;&#x3D;分情况讨论&#x3D;&#x3D;"></a>数位统计——&#x3D;&#x3D;分情况讨论&#x3D;&#x3D;</h2><h2 id="递归和递推"><a href="#递归和递推" class="headerlink" title="递归和递推"></a>递归和递推</h2><ul>
+<li>递归将问题分为子问题</li>
+<li>递推由子问题推</li>
+</ul>
+<h2 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h2><ul>
+<li>判断闰年：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> leap = year % <span class="number">100</span> &amp;&amp; year % <span class="number">4</span> == <span class="number">0</span> || year % <span class="number">400</span> == <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="距离公式"><a href="#距离公式" class="headerlink" title="距离公式"></a>距离公式</h2><ul>
+<li>曼哈顿距离</li>
+</ul>
+<p>​        $d_{M}(P_1, P_2) &#x3D; |x_1 - x_2| + |y_1 - y_2|$</p>
+<ul>
+<li><p>欧几里得距离</p>
+<p>$$ d(x_1,x_2) &#x3D; \sqrt{\sum_{i&#x3D;1}^n{(x_{1,i}-x_{2,i})^2}} $$</p>
+</li>
+</ul>
+<h2 id="单调队列"><a href="#单调队列" class="headerlink" title="单调队列"></a>单调队列</h2><ul>
+<li>求窗口里面的最大最小值</li>
+<li>求离他最近比他小的元素或最大的元素</li>
+</ul>
+
+    </div>
+     
+    <div class="post-footer__meta"><p>updated at 2023-09-03</p></div> 
+    <div class="post-entry__tags"><a href="/tags/%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B/" class="post-tags__link button"># 算法竞赛</a></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+                <a href="/2023/06/19/hello-world/" class="nav__link">
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M589.088 790.624L310.464 512l278.624-278.624 45.248 45.248L400.96 512l233.376 233.376z" fill="#808080"></path></svg>
+                    </div>
+                    <div>
+                        <div class="nav__label">
+                            Previous Post
+                        </div>
+                        <div class="nav__title">
+                            Hello World
+                        </div>
+                    </div>
+                </a>
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/2023/03/23/%E5%AF%B9%E4%BA%8E%E2%80%9C%E5%AD%98%E7%AE%97%E4%B8%80%E4%BD%93%E2%80%9D%E7%9A%84%E7%A0%94%E8%AE%A8/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            对于“存算一体”的研讨
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+    
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2023 <a href="/">Jason&#39;s Web</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+         
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>
