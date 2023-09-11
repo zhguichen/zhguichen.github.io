@@ -47,6 +47,7 @@
 <meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230118155655247-1679759988341-6.png">
 <meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230119210729500-1679759988341-7.png">
 <meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230119210750851-1679759988341-8.png">
+<meta property="og:image" content="http://example.com/image-20230904201842774.png">
 <meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230120220047920-1679759988342-9.png">
 <meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230121112608329-1679759988342-10.png">
 <meta property="og:image" content="http://example.com/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230121145042183-1679759988342-11.png">
@@ -54,7 +55,7 @@
 <meta property="og:image" content="http://example.com/image-20230819110352188.png">
 <meta property="og:image" content="http://example.com/image-20230819113249744.png">
 <meta property="article:published_time" content="2023-06-19T02:53:48.269Z">
-<meta property="article:modified_time" content="2023-09-03T08:36:45.248Z">
+<meta property="article:modified_time" content="2023-09-10T01:01:07.611Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="算法竞赛">
 <meta name="twitter:card" content="summary_large_image">
@@ -192,6 +193,8 @@
 
 <h3 id="lt-queue-gt"><a href="#lt-queue-gt" class="headerlink" title="&lt; queue &gt;"></a>&lt; queue &gt;</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">升序队列，小根堆</span><br><span class="line">priority_queue &lt;<span class="type">int</span>,vector&lt;<span class="type">int</span>&gt;,greater&lt;<span class="type">int</span>&gt;&gt; q;</span><br><span class="line">priority_queue &lt;<span class="type">int</span>,vector&lt;<span class="type">int</span>&gt;,greater&lt;<span class="type">int</span>&gt;&gt; q;</span><br></pre></td></tr></table></figure>
 
+<h2 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">&quot;%d%d%d&quot;</span>,&amp;n,&amp;m,&amp;k) != <span class="number">-1</span>)</span><br></pre></td></tr></table></figure>
+
 
 
 
@@ -238,6 +241,15 @@
 </ul>
 <p><img src="/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230119210729500-1679759988341-7.png" alt="image-20230119210729500"></p>
 <p><img src="/2023/06/19/%E8%93%9D%E6%A1%A5%E6%9D%AF%E5%A4%87%E8%B5%9B/image-20230119210750851-1679759988341-8.png" alt="image-20230119210750851"></p>
+<h3 id="一维差分"><a href="#一维差分" class="headerlink" title="一维差分"></a>一维差分</h3><blockquote>
+<p>快速给某一个区间加上一个数，最终求每一个数的值。</p>
+<p>核心操作：b[l] +&#x3D; x, b[r+1] -&#x3D; x</p>
+</blockquote>
+<p>首先给定一个原数组a：a[1], a[2], a[3],,,,,, a[n];</p>
+<p>然后我们构造一个数组b ： b[1] ,b[2] , b[3],,,,,, b[i];</p>
+<p>使得 a[i] &#x3D; b[1] + b[2 ]+ b[3] +,,,,,, + b[i]</p>
+<p>也就是说，a数组是b数组的前缀和数组，反过来我们把b数组叫做a数组的差分数组。</p>
+<h3 id="二维差分"><a href="#二维差分" class="headerlink" title="二维差分"></a>二维差分</h3><p><img src="/image-20230904201842774.png" alt="image-20230904201842774"></p>
 <h3 id="KMP"><a href="#KMP" class="headerlink" title="KMP"></a>KMP</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// s[]是长文本，p[]是模式串，n是s的长度，m是p的长度</span></span><br><span class="line">求模式串的Next数组：</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">2</span>, j = <span class="number">0</span>; i &lt;= m; i ++ )</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (j &amp;&amp; p[i] != p[j + <span class="number">1</span>]) j = ne[j];</span><br><span class="line">    <span class="keyword">if</span> (p[i] == p[j + <span class="number">1</span>]) j ++ ;</span><br><span class="line">    ne[i] = j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 匹配</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>, j = <span class="number">0</span>; i &lt;= n; i ++ )</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (j &amp;&amp; s[i] != p[j + <span class="number">1</span>]) j = ne[j];</span><br><span class="line">    <span class="keyword">if</span> (s[i] == p[j + <span class="number">1</span>]) j ++ ;</span><br><span class="line">    <span class="keyword">if</span> (j == m)</span><br><span class="line">    &#123;</span><br><span class="line">        j = ne[j];</span><br><span class="line">        <span class="comment">// 匹配成功后的逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="Trie"><a href="#Trie" class="headerlink" title="Trie"></a>Trie</h3><blockquote>
@@ -303,13 +315,13 @@
 <li>没有固定模板，核心在于状态表示和转移。</li>
 <li>0-1背包：物品只能选一次。一维二层枚举需逆序，因为f[ j ]需由f[ i-1 ][ j ]状态更新而来。</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f[i][j] = max(f[i-1][j], f[i-1][j-v) + w) // 二维</span><br><span class="line">f[j] = max(f[j],f[j-v] + w) //一维</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f[i][j] = max(f[i-1][j], f[i-1][j-v) + w) // 二维</span><br><span class="line">f[j] = max(f[j],f[j-v] + w) //一维，二层循环需逆序，f[x][j-v)由上一层得到，j-v小于循环中的j，小的j的先被改变</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>完全背包：物品可以用无数次。</li>
 </ul>
 <p><img src="/image-20230819110352188.png" alt="image-20230819110352188"></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f[i][j] = max(f[i-1][j], f[i][j-v) + w) // 二维</span><br><span class="line">f[j] = max(f[j],f[j-v] + w) //一维，二层循环不用逆序</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">f[i][j] = max(f[i-1][j], f[i][j-v) + w) // 二维</span><br><span class="line">f[j] = max(f[j],f[j-v] + w) //一维，二层循环不用逆序, f[x][j]由上一层得到，f[x][j-v]由第i层得到</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>多重背包：物品可以一次或多次。</li>
@@ -350,7 +362,7 @@
 
     </div>
      
-    <div class="post-footer__meta"><p>updated at 2023-09-03</p></div> 
+    <div class="post-footer__meta"><p>updated at 2023-09-10</p></div> 
     <div class="post-entry__tags"><a href="/tags/%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B/" class="post-tags__link button"># 算法竞赛</a></div> 
 </article>
 
@@ -358,7 +370,7 @@
     <div class="nav">
         <div class="nav__prev">
             
-                <a href="/2023/06/19/hello-world/" class="nav__link">
+                <a href="/2023/08/30/zsh%20command-not%20found%20%EF%BC%9F%EF%BC%9F%EF%BC%9F-%E6%89%80%E6%9C%89%E5%91%BD%E4%BB%A4%E5%9C%A8zsh%E7%BB%88%E7%AB%AF%E5%A4%B1%E6%95%88/" class="nav__link">
                     <div>
                         <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M589.088 790.624L310.464 512l278.624-278.624 45.248 45.248L400.96 512l233.376 233.376z" fill="#808080"></path></svg>
                     </div>
@@ -367,7 +379,7 @@
                             Previous Post
                         </div>
                         <div class="nav__title">
-                            Hello World
+                            zsh command not found  ？？？ 所有命令在zsh终端失效.md
                         </div>
                     </div>
                 </a>
