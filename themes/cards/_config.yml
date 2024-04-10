@@ -56,8 +56,10 @@ navbar:
       url: /tags/
     - name: 归档
       url: /archives/
-    - name: 友链
-      url: /friends/
+    - name: 分类
+      url: /categories
+    #- name: 友链
+      #url: /friends/
     - name: Page
       url: /page/
 
