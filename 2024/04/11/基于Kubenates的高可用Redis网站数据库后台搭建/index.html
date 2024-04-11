@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+    
+    
+    
+    
+
+
+    <!-- meta -->
+
+
+<title>基于Kubenates的高可用Redis网站数据库后台搭建 | Jason&#39;s Web</title>
+
+
+    <meta name="keywords" content="K8s">
+
+
+
+
+    <!-- OpenGraph -->
+ 
+    <meta name="description" content="实验过程 从腾讯云租借3台服务器，搭建Kubenates网站数据库后台 部署主从模式Redis数据库，并进行负载均衡和容灾实验  购买配置云服务器 购买并配置云服务实例  在腾讯云上购买一个实例，确保实例的配置为4核CPU、8GB内存，操作系统选择Ubuntu 20.04。并在安全组中打开TCP: 80端口。   配置前置软件   12sudo apt-get updatesudo apt-get">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Kubenates的高可用Redis网站数据库后台搭建">
+<meta property="og:url" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="Jason&#39;s Web">
+<meta property="og:description" content="实验过程 从腾讯云租借3台服务器，搭建Kubenates网站数据库后台 部署主从模式Redis数据库，并进行负载均衡和容灾实验  购买配置云服务器 购买并配置云服务实例  在腾讯云上购买一个实例，确保实例的配置为4核CPU、8GB内存，操作系统选择Ubuntu 20.04。并在安全组中打开TCP: 80端口。   配置前置软件   12sudo apt-get updatesudo apt-get">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240402160949129.png">
+<meta property="og:image" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240409101440558.png">
+<meta property="og:image" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240409185442606.png">
+<meta property="og:image" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240409190753694.png">
+<meta property="og:image" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240409202725781.png">
+<meta property="og:image" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240409203142191.png">
+<meta property="og:image" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240409203205879.png">
+<meta property="og:image" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240409203453283.png">
+<meta property="og:image" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240409203504993.png">
+<meta property="og:image" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240409205016487.png">
+<meta property="og:image" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240409205347668.png">
+<meta property="article:published_time" content="2024-04-11T02:42:22.000Z">
+<meta property="article:modified_time" content="2024-04-11T02:43:19.970Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="K8s">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2024/04/11/%E5%9F%BA%E4%BA%8EKubenates%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8Redis%E7%BD%91%E7%AB%99%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240402160949129.png">
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="/css/highlight/default.css" media="none" >
+        
+            <link rel="stylesheet" id="hl-dark-theme" href="/css/highlight/dark.css" media="none">
+        
+    
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/style/dark.css">
+
+    
+<script src="/js/darkmode.js"></script>
+
+
+
+     
+
+    <!-- custom head -->
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <body>
+        <div id="app" tabindex="-1">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">主页</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首页</a>
+                
+                    <a href="/tags/" class="navbar-menu button">标签</a>
+                
+                    <a href="/archives/" class="navbar-menu button">归档</a>
+                
+                    <a href="/categories" class="navbar-menu button">分类</a>
+                
+                    <a href="/page/" class="navbar-menu button">Page</a>
+                
+            </div>
+        
+        
+        
+
+        
+        
+    <a href="javaScript:void(0);" id="btn-toggle-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </a>
+
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首页</a>
+                
+                    <a href="/tags/" class="dropdown-menu button">标签</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">归档</a>
+                
+                    <a href="/categories" class="dropdown-menu button">分类</a>
+                
+                    <a href="/page/" class="dropdown-menu button">Page</a>
+                
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        基于Kubenates的高可用Redis网站数据库后台搭建
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2024/04/" class="post-meta__date button">2024-04-11</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+
+<article class="post content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <h2 id="实验过程"><a href="#实验过程" class="headerlink" title="实验过程"></a>实验过程</h2><ul>
+<li>从腾讯云租借3台服务器，搭建Kubenates网站数据库后台</li>
+<li>部署主从模式Redis数据库，并进行负载均衡和容灾实验</li>
+</ul>
+<h2 id="购买配置云服务器"><a href="#购买配置云服务器" class="headerlink" title="购买配置云服务器"></a>购买配置云服务器</h2><ol>
+<li><p>购买并配置云服务实例</p>
+<ul>
+<li>在腾讯云上购买一个实例，确保实例的配置为4核CPU、8GB内存，操作系统选择Ubuntu 20.04。并在安全组中打开TCP: 80端口。</li>
+</ul>
+</li>
+<li><p>配置前置软件</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install vim openssh-server</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>配置SSH以实现后续免密登录</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C<span class="string">&quot;Jason&quot;</span></span><br><span class="line"><span class="built_in">cat</span> ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>创建镜像</li>
+</ol>
+<p>对原实例创建镜像，用镜像创建三个新实例，<em><strong>master</strong></em>，<em><strong>slave1</strong></em>，<em><strong>slave2</strong></em></p>
+<ol start="5">
+<li>配置主机名和主机映射</li>
+</ol>
+<p>在master、child1、child2实例上，分别配置主机名和主机映射，以便在网络中方便地识别和访问彼此。用内网IP，降低使用成本。</p>
+<ul>
+<li><p><strong>配置主机映射（<code>/etc/hosts</code>）</strong>：添加或确认主机IP与名称的映射关系。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/hosts</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>配置主机名（<code>/etc/hostname</code>）</strong>：设置或修改实例的主机名，使其更具标识性。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/hostname</span><br></pre></td></tr></table></figure></li>
+</ul>
+<img src="/2024/04/11/基于Kubenates的高可用Redis网站数据库后台搭建/image-20240402160949129.png"  alt="image-20240402160949129" style="zoom:25%;" />
+
+<h2 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h2><ol>
+<li>更新仓库</li>
+</ol>
+<p>首先，需要更新系统，并安装一些必要的包，包括<code>ca-certificates</code>，<code>curl</code>，<code>gnupg</code>。这些都是为了确保后续步骤中安全地添加Docker的官方GPG密钥和仓库。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install ca-certificates curl gnupg</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>添加Docker的官方GPG密钥</li>
+</ol>
+<p>为了验证下载的软件包的真实性，需要添加Docker的官方GPG密钥到系统中。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo install -m 0755 -d /etc/apt/keyrings</span><br><span class="line">sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc</span><br><span class="line">sudo <span class="built_in">chmod</span> a+r /etc/apt/keyrings/docker.asc</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>将Docker仓库添加到Apt源</li>
+</ol>
+<p>这一步骤是为了让Apt软件包管理器知道Docker的下载地址，并设置为从这个地址安装Docker。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> \</span><br><span class="line">  <span class="string">&quot;deb [arch=<span class="subst">$(dpkg --print-architecture)</span> signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \</span></span><br><span class="line"><span class="string">  <span class="subst">$(. /etc/os-release &amp;&amp; echo <span class="string">&quot;<span class="variable">$VERSION_CODENAME</span>&quot;</span>)</span> stable&quot;</span> | \</span><br><span class="line">  sudo <span class="built_in">tee</span> /etc/apt/sources.list.d/docker.list &gt; /dev/null</span><br></pre></td></tr></table></figure>
+
+<p>接下来，再次更新Apt软件包列表，以确保Apt可以加载新添加的Docker仓库。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/04/11/基于Kubenates的高可用Redis网站数据库后台搭建/image-20240409101440558.png"  alt="image-20240409101440558" style="zoom:30%;" />
+
+<ol start="4">
+<li>安装Docker</li>
+</ol>
+<p>首先，检查可安装的Docker版本，然后选择一个特定版本安装。最后运行一个Hello World示例来验证Docker安装是否成功。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">apt list -a docker-ce</span><br><span class="line">sudo apt-get install docker-ce=5:19.03.10~3-0~ubuntu-focal</span><br><span class="line">sudo docker run hello-world</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置K8s——容器管理平台"><a href="#配置K8s——容器管理平台" class="headerlink" title="配置K8s——容器管理平台"></a>配置K8s——容器管理平台</h2><ol>
+<li>安装Kubernetes 1.18的三个组件</li>
+</ol>
+<p>Kubernetes是一个开源平台，用于自动部署，扩展和管理容器化应用程序。以下步骤将安装Kubernetes的三个核心组件：<code>kubelet</code>，<code>kubeadm</code>，<code>kubectl</code>。</p>
+<p>首先，安装<code>apt-transport-https</code>以允许通过HTTPS使用apt仓库。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install apt-transport-https</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>更换Kubernetes的Aliyun源</li>
+</ol>
+<p>为了提高下载速度，我们将使用位于中国的阿里云作为Kubernetes的软件源。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | sudo apt-key add - </span><br></pre></td></tr></table></figure>
+
+<p>编辑<code>/etc/apt/sources.list.d/kubernetes.list</code>文件，添加阿里云的Kubernetes源。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/apt/sources.list.d/kubernetes.list</span><br></pre></td></tr></table></figure>
+
+<p>添加内容：<code>deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main</code></p>
+<p>然后更新Apt软件包列表，并安装指定版本的Kubernetes组件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">apt-cache madison kubeadm</span><br><span class="line">sudo apt-get install -y kubelet=1.18.0-00 kubeadm=1.18.0-00 kubectl=1.18.0-00</span><br><span class="line">kubeadm version <span class="comment">#查看k8s版本</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2024/04/11/基于Kubenates的高可用Redis网站数据库后台搭建/image-20240409185442606.png"  alt="image-20240409185442606" style="zoom:30%;" />
+
+<h3 id="设置-Kubernetes-集群的主节点"><a href="#设置-Kubernetes-集群的主节点" class="headerlink" title="设置 Kubernetes 集群的主节点"></a>设置 Kubernetes 集群的主节点</h3><ol>
+<li><p><strong>在主节点上初始化集群</strong>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo swapoff -a</span><br><span class="line">sudo kubeadm init --apiserver-advertise-address=&lt;主节点IP地址&gt; --image-repository registry.aliyuncs.com/google_containers --service-cidr=10.96.0.0/12  --pod-network-cidr=10.244.0.0/16</span><br><span class="line">sudo kubeadm init --apiserver-advertise-address=172.19.0.9 --image-repository registry.aliyuncs.com/google_containers --service-cidr=10.96.0.0/12  --pod-network-cidr=10.244.0.0/16</span><br></pre></td></tr></table></figure>
+
+<p>请将 <code>&lt;主节点IP地址&gt;</code> 替换为主节点的内网 IP 地址。</p>
+<img src="/2024/04/11/基于Kubenates的高可用Redis网站数据库后台搭建/image-20240409190753694.png"  alt="image-20240409190753694" style="zoom:25%;" />
+</li>
+<li><p><strong>设置 kubectl 访问</strong>: 使其能够与Kubernetes集群交互。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> -p <span class="variable">$HOME</span>/.kube</span><br><span class="line">sudo <span class="built_in">cp</span> -i /etc/kubernetes/admin.conf <span class="variable">$HOME</span>/.kube/config</span><br><span class="line">sudo <span class="built_in">chown</span> $(<span class="built_in">id</span> -u):$(<span class="built_in">id</span> -g) <span class="variable">$HOME</span>/.kube/config</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>安装网络插件</strong> (例如，使用 Flannel): 应用Flannel网络插件以便在Kubernetes集群中管理网络。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>将工作节点加入集群</strong></p>
+</li>
+</ol>
+<ul>
+<li><p>关闭 swap 分区。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo swapoff -a</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在每个工作节点上，运行由 <code>kubeadm init</code> 命令在主节点上生成的加入命令，格式类似于：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo kubeadm join &lt;主节点IP地址&gt;:<span class="number">6443</span> --token &lt;令牌&gt; --discovery-token-ca-cert-hash sha256:&lt;哈希&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<ol start="5">
+<li><p>在master查看节点情况</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get nodes</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/04/11/基于Kubenates的高可用Redis网站数据库后台搭建/image-20240409202725781.png"  alt="image-20240409202725781" style="zoom:40%;" /></li>
+</ol>
+<h2 id="配置Redis"><a href="#配置Redis" class="headerlink" title="配置Redis"></a>配置Redis</h2><p>在 Kubernetes 集群中部署 Redis 时，通常不需要在节点上手动下载 Redis 软件。相反，部署过程是通过 Kubernetes 配置文件（通常是 YAML 文件）来完成的，这些配置文件定义了应该从哪个容器镜像仓库拉取 Redis 容器镜像以及如何配置和运行这个容器。Kubernetes 会负责从指定的容器镜像仓库下载（拉取）镜像，并在集群的节点上运行它。</p>
+<ol>
+<li><strong>部署 Redis 到 Kubernetes 的基本步骤</strong></li>
+</ol>
+<ul>
+<li><strong>创建 Redis 示例目录</strong>：为了组织相关文件，创建了一个名为 <code>redis-example</code> 的目录。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> redis-example</span><br><span class="line"><span class="built_in">cd</span> redis-example/</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>创建并应用 Redis 领导者部署配置</strong>：编辑 <code>redis-leader-deployment.yaml</code> 文件来定义 Redis 领导者的部署，然后通过 <code>kubectl apply</code> 命令部署到集群中。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim redis-leader-deployment.yaml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>创建并应用 Redis 领导者服务配置</strong>：定义 Redis 领导者服务以允许网络访问，再次使用 <code>kubectl apply</code> 命令应用配置。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim redis-leader-service.yaml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>创建并应用 Redis 跟随者部署和服务配置</strong>：类似地，定义 Redis 跟随者的部署和服务，然后部署到集群。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim redis-follower-deployment.yaml</span><br><span class="line">vim redis-follower-service.yaml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>应用配置</strong>：<br>使用 <code>kubectl</code> 命令应用这些配置，部署 Redis 并创建服务。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f redis-leader-deployment.yaml</span><br><span class="line">kubectl apply -f redis-leader-service.yaml</span><br><span class="line">kubectl apply -f redis-follower-deployment.yaml</span><br><span class="line">kubectl apply -f redis-follower-service.yaml</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>验证部署</li>
+</ol>
+<ul>
+<li><p><strong>查看 Pods</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pods</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/04/11/基于Kubenates的高可用Redis网站数据库后台搭建/image-20240409203142191.png"  alt="image-20240409203142191" style="zoom:35%;" />
+</li>
+<li><p><strong>查看服务</strong>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get services</span><br></pre></td></tr></table></figure></li>
+</ul>
+<img src="/2024/04/11/基于Kubenates的高可用Redis网站数据库后台搭建/image-20240409203205879.png"  alt="image-20240409203205879" style="zoom:35%;" />
+
+<h2 id="部署前端页面"><a href="#部署前端页面" class="headerlink" title="部署前端页面"></a>部署前端页面</h2><ol>
+<li><strong>创建Deployment配置文件</strong></li>
+</ol>
+<p>使用<code>sudo vim frontend-deployment.yaml</code>命令创建一个名为<code>frontend-deployment.yaml</code>的文件。这个文件定义了前端应用的部署（Deployment）配置，告诉Kubernetes如何创建和管理前端应用的副本。</p>
+<ol start="2">
+<li><strong>创建Service配置文件</strong></li>
+</ol>
+<p>接下来，使用<code>sudo vim frontend-service.yaml</code>命令创建一个名为<code>frontend-service.yaml</code>的文件。这个文件定义了一个服务（Service），用于暴露前端应用到网络上。通过服务，其他应用或用户可以访问前端应用。</p>
+<ol start="3">
+<li><strong>应用配置</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f frontend-deployment.yaml</span><br><span class="line">kubectl apply -f frontend-service.yaml</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><p>验证部署</p>
+<img src="/2024/04/11/基于Kubenates的高可用Redis网站数据库后台搭建/image-20240409203453283.png"  alt="image-20240409203453283" style="zoom:35%;" />
+
+<img src="/2024/04/11/基于Kubenates的高可用Redis网站数据库后台搭建/image-20240409203504993.png"  alt="image-20240409203504993" style="zoom:40%;" />
+</li>
+<li><p><strong>登录</strong></p>
+</li>
+</ol>
+<p>由于服务设置为 <code>NodePort</code>，Kubernetes 会在所有节点上为服务分配一个端口（<code>nodePort</code>），使得服务可以通过 <code>&lt;任意节点的IP&gt;:&lt;nodePort&gt;</code> 的形式被外部访问。所以可以使用集群中任一节点的IP地址加上指定的 <code>nodePort</code> 来访问前端服务。</p>
+<img src="/2024/04/11/基于Kubenates的高可用Redis网站数据库后台搭建/image-20240409205016487.png"  alt="image-20240409205016487" style="zoom:30%;" />
+
+<ol start="6">
+<li><p>缩容</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl scale deployment frontend --replicas=<span class="number">5</span></span><br><span class="line">kubectl delete pod frontend<span class="number">-769f</span>bdbdcc<span class="number">-7</span>zsbm</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/04/11/基于Kubenates的高可用Redis网站数据库后台搭建/image-20240409205347668.png"  alt="image-20240409205347668" style="zoom:35%;" /></li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>随着应用用户的增长，系统需要稳定运行和快速响应用户需求。通过K8s，前端应用可以自动缩容以适应用户变化，通过K8s的负载均衡能力，可以将用户分配到健康的容器中。本次实验设置了一个master节点和两个slave节点，这样即使一个节点发生故障，其它结果也可用。</p>
+<p>考虑到用户的高频访问需求，使用Redis可以减少对后端的Api的访问的直接调用以提高速度。Redis相当于一个缓冲层，当有新需求进来时，它首先检查缓存中是否有最近的数据，如果缓存中没有数据，应用则向后端服务请求最新数据，然后将结果存储在Redis中，以供后续请求使用。</p>
+<p>通过将Docker、Kubernetes和Redis结合使用，就成功地构建了一个既强大又灵活的前端网页应用部署解决方案。</p>
+
+    </div>
+     
+    <div class="post-footer__meta"><p>updated at 2024-04-11</p></div> 
+    <div class="post-entry__tags"><a href="/tags/K8s/" class="post-tags__link button"># K8s</a></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/2024/04/11/%E5%A4%9A%E5%8F%B0%E7%BB%88%E7%AB%AFSSH%E6%97%A0%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            多台终端SSH无密码登录
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+    
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2024 <a href="/">Jason&#39;s Web</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+         
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>
