@@ -2,21 +2,21 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="关于" description="Jason 的个人笔记，记录兴趣、实践与生活。">
+<BaseLayout title="关于" description="Jason 的自我介绍：ECNU 数据科学与工程学院硕士研究生，正在研究与探索 Engineer、AI、Lifestyle 与 Health 等方向。">
   <section class="about-page" aria-labelledby="about-title">
-    <p class="eyebrow"><span></span>About this notebook</p>
-    <h1 id="about-title">把感兴趣的事，<br /><em>认真记下来。</em></h1>
-    <div class="about-grid">
-      <div class="about-copy">
-        <p>这里是 Jason 的个人笔记，记录技术、运动、生活，以及任何值得长期投入的兴趣。</p>
-        <p>有些内容是解决问题时留下的方法，有些是训练、阅读或日常体验中的观察。它们不必属于同一个领域，但都值得在以后重新回看。</p>
-        <p>这个站点不追逐更新频率。每篇笔记只需要在未来某一天，仍然能带来一点启发或帮助。</p>
-      </div>
-      <dl class="about-details">
-        <div><dt>主题</dt><dd>技术 / 运动 / 生活 / 兴趣</dd></div>
-        <div><dt>语言</dt><dd>简体中文</dd></div>
-        <div><dt>联系</dt><dd><a href="https://github.com/zhguichen">GitHub ↗</a></dd></div>
-      </dl>
+    <header class="about-intro">
+      <h1 id="about-title">关于 Jason 的笔记</h1>
+      <p>一些我正在研究与探索的事：Engineer · AI · Lifestyle · Health · ……</p>
+    </header>
+
+    <div class="about-story">
+      <h2>自我介绍</h2>
+      <p>你好，我是 Jason，Master's student at the School of Data Science and Engineering, East China Normal University (ECNU)，也是这个笔记本的主人。这里记录我写下的代码、读过的书、训练中的体会，以及一切让我想继续探索的事。</p>
+      <h2>我在探索什么</h2>
+      <p>写代码是主业，对 AI 与新的工具保持好奇。最近想花时间的方向是 <strong>Engineer · AI · Lifestyle · Health · ……</strong> —— 既想把专业上的事做好，也想把身体和生活经营好。</p>
+      <p>写下来不是为了给每个问题一个结论，而是为了保留当时的问题、方法和判断。以后回看时，知道自己从哪里出发。</p>
+      <h2>如何联系</h2>
+      <p>可以通过 <a href="https://github.com/zhguichen">GitHub</a> 找到我，也可以 <a href="/rss.xml">订阅 RSS</a>。</p>
     </div>
   </section>
 </BaseLayout>

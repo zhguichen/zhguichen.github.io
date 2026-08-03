@@ -8,6 +8,10 @@ const topics = [...new Set(notes.map((note) => note.data.topic))];
 ---
 
 <BaseLayout title="笔记" description="按时间与主题浏览 Jason 的所有公开笔记。">
+  <header class="archive-hero">
+    <h1>所有文章</h1>
+    <p>按主题浏览 Jason 的公开记录。</p>
+  </header>
   <nav class="topic-index" aria-label="文章主题">
     <span>主题</span>
     {topics.map((topic) => <a href={`#${topic}`}>{topic}</a>)}

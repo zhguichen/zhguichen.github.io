@@ -1,17 +1,42 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import NoteList from '../components/NoteList.astro';
-import { getPublishedNotes } from '../lib/notes';
+import { getPublishedNotes, readingTime } from '../lib/notes';
 
 const notes = await getPublishedNotes();
+
+const monthFmt = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'UTC' });
+const dayFmt = new Intl.DateTimeFormat('en-US', { day: '2-digit', timeZone: 'UTC' });
+const yearFmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', timeZone: 'UTC' });
 ---
 
-<BaseLayout>
-  <section class="home-notes" aria-labelledby="blog-title">
-    <header class="home-notes-header">
-      <p>Jason / Notes</p>
-      <h1 id="blog-title">Blog</h1>
-    </header>
-    <NoteList notes={notes} minimal />
+<BaseLayout description="Jason 的个人笔记，记录正在研究与探索的事。">
+  <section class="home-page" aria-labelledby="blog-title">
+    <div class="cover">
+      <img class="cover-icon" src="/images/avatar.jpg" alt="Jason 的头像" />
+      <h1 id="blog-title" class="cover-title">Jason's Notebook</h1>
+      <p class="cover-description">一些我正在研究与探索的事：Engineer · AI · Lifestyle · Health · ……</p>
+      <div class="cover-cta">
+        <a class="button button-primary" href="/rss.xml">RSS 订阅</a>
+        <a class="button button-secondary" href="https://github.com/zhguichen" rel="me">GitHub</a>
+      </div>
+    </div>
+
+    <div class="post-feed">
+      {notes.map((note) => (
+        <article class="feed">
+          <div class="feed-calendar" aria-hidden="true">
+            <span class="feed-calendar-month">{monthFmt.format(note.data.date)}</span>
+            <span class="feed-calendar-day">{dayFmt.format(note.data.date)}</span>
+          </div>
+          <h2 class="feed-title">
+            <a href={`/notes/${note.data.slug}/`}>{note.data.title}</a>
+          </h2>
+          <div class="feed-right">
+            <span class="feed-meta">{yearFmt.format(note.data.date)} · {readingTime(note)} 分钟阅读</span>
+          </div>
+          <span class="feed-icon" aria-hidden="true">→</span>
+        </article>
+      ))}
+    </div>
   </section>
 </BaseLayout>
