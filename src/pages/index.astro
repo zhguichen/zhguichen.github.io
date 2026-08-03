@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NoteList from '../components/NoteList.astro';
+import { getPublishedNotes } from '../lib/notes';
+
+const notes = await getPublishedNotes();
+---
+
+<BaseLayout>
+  <section class="home-notes" aria-labelledby="blog-title">
+    <header class="home-notes-header">
+      <p>Jason / Notes</p>
+      <h1 id="blog-title">Blog</h1>
+    </header>
+    <NoteList notes={notes} minimal />
+  </section>
+</BaseLayout>

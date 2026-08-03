@@ -1,0 +1,36 @@
+---
+import type { Note } from '../lib/notes';
+import { formatDate, readingTime } from '../lib/notes';
+import TagList from './TagList.astro';
+
+interface Props {
+  notes: Note[];
+  compact?: boolean;
+  minimal?: boolean;
+}
+
+const { notes, compact = false, minimal = false } = Astro.props;
+---
+
+<ol class:list={['note-list', { 'note-list--compact': compact }]}>
+  {
+    notes.map((note) => (
+      <li>
+        <article class="note-row">
+          <div class="note-meta">
+            <time datetime={note.data.date.toISOString()}>{formatDate(note.data.date)}</time>
+            <span>{note.data.topic}</span>
+          </div>
+          <div class="note-main">
+            <h3><a href={`/notes/${note.data.slug}/`}>{note.data.title}</a></h3>
+            {!minimal && !compact && <p>{note.data.description}</p>}
+            {!minimal && <div class="note-bottom">
+              <TagList tags={note.data.tags} />
+              <span class="reading-time">{readingTime(note)} 分钟阅读</span>
+            </div>}
+          </div>
+        </article>
+      </li>
+    ))
+  }
+</ol>

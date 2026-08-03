@@ -1,0 +1,46 @@
+---
+import '../styles/global.css';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  article?: boolean;
+}
+
+const {
+  title,
+  description = 'Jason 的个人笔记，记录技术、运动、生活与持续探索。',
+  article = false
+} = Astro.props;
+const pageTitle = title ? `${title} — Jason / Notes` : 'Jason / Notes';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0c0e11" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="Jason / Notes" href="/rss.xml" />
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <div class="site-shell">
+      <Header />
+      <main id="content">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>

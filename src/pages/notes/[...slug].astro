@@ -1,0 +1,50 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NoteList from '../../components/NoteList.astro';
+import TagList from '../../components/TagList.astro';
+import { formatDate, getPublishedNotes, readingTime, relatedNotes } from '../../lib/notes';
+
+export async function getStaticPaths() {
+  const notes = await getPublishedNotes();
+  return notes.map((note) => ({ params: { slug: note.data.slug }, props: { note } }));
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+const notes = await getPublishedNotes();
+const related = relatedNotes(note, notes);
+---
+
+<BaseLayout title={note.data.title} description={note.data.description} article>
+  <article class="article">
+    <header class="article-header">
+      <p class="eyebrow"><span></span>{note.data.topic}</p>
+      <h1>{note.data.title}</h1>
+      <p class="article-description">{note.data.description}</p>
+      <div class="article-details">
+        <time datetime={note.data.date.toISOString()}>{formatDate(note.data.date)}</time>
+        <span aria-hidden="true">/</span>
+        <span>{readingTime(note)} 分钟阅读</span>
+        {note.data.updated && <><span aria-hidden="true">/</span><span>更新于 {formatDate(note.data.updated)}</span></>}
+      </div>
+      <TagList tags={note.data.tags} />
+    </header>
+    <div class="article-rule" aria-hidden="true"><span></span></div>
+    <div class="prose"><Content /></div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="related-section" aria-labelledby="related-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow"><span></span>继续阅读</p>
+            <h2 id="related-title">相关笔记</h2>
+          </div>
+        </div>
+        <NoteList notes={related} compact />
+      </section>
+    )
+  }
+</BaseLayout>

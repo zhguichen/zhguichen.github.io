@@ -1,0 +1,31 @@
+---
+const path = Astro.url.pathname;
+const links = [
+  { href: '/', label: '首页' },
+  { href: '/notes/', label: '笔记' },
+  { href: '/about/', label: '关于' }
+];
+---
+
+<header class="site-header">
+  <a class="brand" href="/" aria-label="Jason Notes 首页">
+    <span class="brand-mark" aria-hidden="true">G</span>
+    <span class="brand-copy">
+      <strong>Jason</strong>
+      <small>NOTES / 2023—</small>
+    </span>
+  </a>
+  <nav aria-label="主导航">
+    <ul class="site-nav">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href} aria-current={path === link.href ? 'page' : undefined}>
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>

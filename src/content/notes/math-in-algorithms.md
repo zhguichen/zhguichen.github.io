@@ -1,0 +1,41 @@
+---
+title: 数学在算法中的运用
+slug: math-in-algorithms
+description: 整理同余、欧几里得算法与裴蜀定理等竞赛中常用的数学工具。
+date: 2023-09-03T11:27:50+08:00
+topic: 算法
+tags: [算法竞赛, 数学, C++]
+featured: true
+draft: false
+---
+
+1. 在C++中负数取余位了避免出现负数运用==同余定理==
+
+   > x%mod=(x%mod+mod)%mod
+
+2. 路灯覆盖问题：一个灯可以照亮+-k的区域，路的长度为l，需要的最少路灯数量为多少？
+
+   > n = l / (2k+1)  上取整，即n = (l + 2k + 1 - 1) / (2k + 1)
+
+3. ==欧几里得算法==：两个整数的最大公约数等于其中较小数与两数的差的最大公约数
+
+   ```cpp
+   int gcd(int a, int b) {
+       if (b == 0) {
+           return a;
+       } else {
+           return gcd(b, a % b);
+       }
+   }
+   int gcd(int a, int b){
+       return b ? gcd(b, a % b) : a;
+   }
+   ```
+
+
+
+4. ==裴蜀定理==：对于任意整数x,y, ax+by都一定是d的倍数
+
+   > ax + by = gcd(a,b)
+
+​          note：0 和x的最大公约数为x
