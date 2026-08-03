@@ -127,9 +127,9 @@ code, pre { font-family: var(--font-mono); }
 .related-section { padding: 0 0 38px; }
 
 .about-page { width: min(700px, 100%); margin: 0 auto; padding: 88px 0 42px; }
-.about-intro { padding-bottom: 40px; border-bottom: 1px solid var(--line-strong); }
+.about-intro { padding-bottom: 40px; border-bottom: 1px solid var(--line-strong); text-align: center; }
 .about-intro h1 { font-size: clamp(40px, 5.5vw, 60px); }
-.about-intro p { max-width: 480px; }
+.about-intro p { max-width: 480px; margin-inline: auto; }
 .about-story { max-width: 620px; margin-top: 43px; color: var(--ink-soft); font-family: var(--font-display); font-size: 19px; line-height: 1.9; }
 .about-story h2 { margin: 2em 0 0.55em; color: var(--ink); font-family: var(--font-sans); font-size: 18px; font-weight: 650; letter-spacing: -0.035em; }
 .about-story p { margin: 0 0 1.25em; }
