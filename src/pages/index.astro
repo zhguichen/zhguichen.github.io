@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublishedNotes, readingTime } from '../lib/notes';
+import TagList from '../components/TagList.astro';
 
 const notes = await getPublishedNotes();
 
@@ -27,11 +28,15 @@ const yearFmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', timeZone: 'U
             <span class="feed-calendar-month">{monthFmt.format(note.data.date)}</span>
             <span class="feed-calendar-day">{dayFmt.format(note.data.date)}</span>
           </div>
-          <h2 class="feed-title">
-            <a href={`/notes/${note.data.slug}/`}>{note.data.title}</a>
-          </h2>
-          <div class="feed-right">
-            <span class="feed-meta">{yearFmt.format(note.data.date)} · {readingTime(note)} 分钟阅读</span>
+          <div class="feed-body">
+            <h2 class="feed-title">
+              <a href={`/notes/${note.data.slug}/`}>{note.data.title}</a>
+            </h2>
+            <p class="feed-description">{note.data.description}</p>
+            <div class="feed-bottom">
+              <TagList tags={note.data.tags} />
+              <span class="feed-meta">{yearFmt.format(note.data.date)} · {readingTime(note)} 分钟阅读</span>
+            </div>
           </div>
           <span class="feed-icon" aria-hidden="true">→</span>
         </article>
