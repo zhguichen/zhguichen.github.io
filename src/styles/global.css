@@ -35,10 +35,9 @@ code, pre { font-family: var(--font-mono); }
 .header-rss span { margin-right: 3px; color: var(--accent); }
 
 .home-page { padding: 0 0 26px; }
-.cover { display: flex; flex-direction: column; align-items: center; padding: 84px 0 54px; border-bottom: 1px solid var(--line); text-align: center; }
-.cover-icon { width: 140px; height: 140px; border: 1px solid var(--line-strong); border-radius: 50%; object-fit: cover; }
+.cover { display: flex; flex-direction: column; align-items: center; padding: 64px 0 54px; border-bottom: 1px solid var(--line); text-align: center; }
 .cover-title, .archive-hero h1, .about-intro h1, .not-found h1 { margin: 0; font-family: var(--font-display); font-size: clamp(39px, 5.2vw, 58px); font-weight: 500; letter-spacing: -0.02em; line-height: 1.08; }
-.cover-title { margin-top: 26px; }
+.about-avatar { display: block; width: 132px; height: 132px; margin: 0 auto 24px; border: 1px solid var(--line-strong); border-radius: 50%; object-fit: cover; }
 .cover-description { margin: 13px 0 0; color: var(--ink-soft); font-size: 15px; }
 .cover-cta { display: flex; gap: 13px; margin-top: 30px; }
 .button { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 20px; border: 1px solid transparent; border-radius: 6px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em; text-decoration: none; transition: color 140ms ease, border-color 140ms ease, background-color 140ms ease; }
@@ -152,8 +151,8 @@ code, pre { font-family: var(--font-mono); }
   .site-nav a { font-size: 12px; }
   .header-rss { display: none; }
   .archive-hero { padding-top: 61px; }
-  .cover { padding: 56px 0 40px; }
-  .cover-icon { width: 112px; height: 112px; }
+  .cover { padding: 48px 0 40px; }
+  .about-avatar { width: 108px; height: 108px; }
   .cover-title, .archive-hero h1, .about-intro h1, .not-found h1 { font-size: clamp(36px, 10vw, 50px); }
   .feed { flex-wrap: wrap; gap: 9px 14px; padding: 17px 0; }
   .feed-body { flex: 1 1 calc(100% - 70px); margin-right: 0; order: 2; }
