@@ -1,7 +1,7 @@
 ---
 title: GraphRAG 两年后：还在维护，但大多数场景用不上
 slug: graphrag-2y-later
-description: GraphRAG 发布两年后，实证确认它只在多跳推理、跨文档综述和关系型查询三类查询上值得用；简单事实检索它是负资产，而且更贵、更难维护。
+description: GraphRAG 开源两年后仍在维护，但大多数 RAG 场景实测用不上它：简单事实检索它是负资产，只有多跳推理、跨文档综述和关系型查询值得上，而且它更贵、更难维护。
 date: 2026-08-06T00:00:00+08:00
 topic: AI 工程
 tags: [GraphRAG, RAG, 知识图谱]
