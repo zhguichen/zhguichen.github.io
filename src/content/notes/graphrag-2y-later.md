@@ -1,5 +1,5 @@
 ---
-title: GraphRAG 两年后：只在三类查询上值得用
+title: GraphRAG 两年后：还在维护，但大多数场景用不上
 slug: graphrag-2y-later
 description: GraphRAG 发布两年后，实证确认它只在多跳推理、跨文档综述和关系型查询三类查询上值得用；简单事实检索它是负资产，而且更贵、更难维护。
 date: 2026-08-06T00:00:00+08:00
@@ -8,7 +8,7 @@ tags: [GraphRAG, RAG, 知识图谱]
 featured: false
 draft: false
 ---
-# GraphRAG 两年后：只在三类查询上值得用
+# GraphRAG 两年后：还在维护，但大多数场景用不上
 
 ![选型分岔图：多跳推理、跨文档综述、关系型查询三类查询走知识图谱，简单事实检索与常规问答走向量检索](assets/graphrag-2y-later/hero.jpg)
 
