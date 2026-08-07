@@ -7,15 +7,51 @@ interface Props {
   title?: string;
   description?: string;
   article?: boolean;
+  publishedAt?: Date;
+  updatedAt?: Date;
+  tags?: string[];
 }
 
 const {
   title,
   description = 'Jason 的个人笔记，记录技术、运动、生活与持续探索。',
-  article = false
+  article = false,
+  publishedAt,
+  updatedAt,
+  tags = []
 } = Astro.props;
 const pageTitle = title ? `${title} — Lottery Life` : 'Lottery Life';
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const socialImage = new URL('/og-default.png', Astro.site);
+const structuredData = article
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: title,
+      description,
+      image: [socialImage.href],
+      datePublished: publishedAt?.toISOString(),
+      dateModified: (updatedAt ?? publishedAt)?.toISOString(),
+      author: {
+        '@type': 'Person',
+        name: 'Jason',
+        url: new URL('/about/', Astro.site).href
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': canonical.href
+      },
+      inLanguage: 'zh-CN',
+      keywords: tags
+    }
+  : {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'Lottery Life',
+      url: new URL('/', Astro.site).href,
+      description,
+      inLanguage: 'zh-CN'
+    };
 ---
 
 <!doctype html>
@@ -33,7 +69,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Lottery Life" />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
     <title>{pageTitle}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-055CVRKE74"></script>
     <script>

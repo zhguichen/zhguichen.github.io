@@ -16,7 +16,14 @@ const notes = await getPublishedNotes();
 const related = relatedNotes(note, notes);
 ---
 
-<BaseLayout title={note.data.title} description={note.data.description} article>
+<BaseLayout
+  title={note.data.title}
+  description={note.data.description}
+  article
+  publishedAt={note.data.date}
+  updatedAt={note.data.updated}
+  tags={note.data.tags}
+>
   <article class="article">
     <header class="article-header">
       <p class="eyebrow"><span></span>{note.data.topic}</p>

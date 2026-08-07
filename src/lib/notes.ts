@@ -12,10 +12,21 @@ export function formatDate(date: Date) {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-    timeZone: 'UTC'
+    timeZone: 'Asia/Shanghai'
   })
     .format(date)
     .replaceAll('/', '.');
+}
+
+export function formatDateISO(date: Date) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: 'Asia/Shanghai'
+  }).formatToParts(date);
+  const values = Object.fromEntries(parts.map(({ type, value }) => [type, value]));
+  return `${values.year}-${values.month}-${values.day}`;
 }
 
 export function readingTime(note: Note) {
