@@ -3,6 +3,7 @@ title: Prompt Cache 的原理：命中率由前缀稳定决定
 slug: prompt-cache-prefix-stability
 description: 同一模型下缓存命中率能差出 4 倍，不是模型问题：前缀字节稳定性决定命中率。讲清缓存机制、七种真实破缓存事故，以及怎么不踩坑。
 date: 2026-08-06T00:00:00+08:00
+cover: ./assets/prompt-cache-prefix-stability/fig1_prefix_cache_mechanism.png
 topic: AI 工程
 tags: [Prompt Caching, Agent, LLM]
 featured: false

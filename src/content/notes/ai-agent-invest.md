@@ -3,6 +3,7 @@ title: 投资 agent 真的能帮我赚钱吗？
 slug: ai-agent-invest
 description: 实盘实验显示 AI agent 偶尔能赢，但远未形成稳定策略：真正先赚到钱的是券商、投顾和卖课的人，而普通用户靠它持续赚钱仍待考量。
 date: 2026-08-07T00:00:00+08:00
+cover: ./assets/ai-agent-invest/champions.png
 topic: AI 前沿
 tags: [AI Agent, 投资, 交易]
 featured: false

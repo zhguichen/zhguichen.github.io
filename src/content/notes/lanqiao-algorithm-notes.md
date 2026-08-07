@@ -3,6 +3,7 @@ title: 算法竞赛学习笔记
 slug: lanqiao-algorithm-notes
 description: 从输入输出、常用函数到图论与动态规划的一组持续更新的竞赛备赛记录。
 date: 2023-06-18T12:00:00+08:00
+coverUrl: /images/notes/lanqiao/image-20230119105851793-1679759988341-3.png
 topic: 算法
 tags: [算法竞赛, C++, 蓝桥杯]
 featured: true

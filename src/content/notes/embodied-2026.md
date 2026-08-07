@@ -3,6 +3,7 @@ title: 具身智能 2026：机器人已经能跑赢人类，为什么还叠不�
 slug: embodied-2026
 description: 机器人会跑不等于会干活：半马纪录已经被刷新，做饭、洗衣和叠衣仍受复杂环境与长流程可靠性限制，近期真正能规模化落地的更可能是工厂和仓库。
 date: 2026-08-07T00:00:00+08:00
+cover: ./assets/embodied-2026/hero.png
 topic: AI 前沿
 tags: [具身智能, 机器人, 人形机器人]
 featured: false

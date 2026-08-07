@@ -3,6 +3,7 @@ title: Mem0 融了 2400 万美元，也存下了 97.8% 的垃圾
 slug: mem0-97-percent-garbage
 description: Mem0 宣布完成 2400 万美元融资的同时，一份独立审计显示它 32 天存下的 10134 条记忆里 97.8% 是垃圾：agent 记忆的商业化跑在了可验证的质量前面。
 date: 2026-08-05T00:00:00+08:00
+cover: ./assets/mem0-memory-junk/hero.jpg
 topic: AI 工程
 tags: [AI Agent, 记忆, 商业化]
 featured: false

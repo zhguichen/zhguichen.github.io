@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import type { ImageMetadata } from 'astro';
 
 interface Props {
   title?: string;
@@ -10,6 +11,8 @@ interface Props {
   publishedAt?: Date;
   updatedAt?: Date;
   tags?: string[];
+  cover?: ImageMetadata;
+  coverUrl?: string;
 }
 
 const {
@@ -18,13 +21,17 @@ const {
   article = false,
   publishedAt,
   updatedAt,
-  tags = []
+  tags = [],
+  cover,
+  coverUrl
 } = Astro.props;
 const siteName = "Jason's Notes";
 const pageTitle = title ? `${title} — ${siteName}` : siteName;
 const shareTitle = title ?? siteName;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const socialImage = new URL('/og-default.png', Astro.site);
+const socialImage = new URL(coverUrl ?? cover?.src ?? '/og-default.png', Astro.site);
+const socialImageWidth = cover?.width ?? 1200;
+const socialImageHeight = cover?.height ?? 630;
 const structuredData = article
   ? {
       '@context': 'https://schema.org',
@@ -73,8 +80,8 @@ const structuredData = article
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:image" content={socialImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content={socialImageWidth} />
+    <meta property="og:image:height" content={socialImageHeight} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={shareTitle} />
     <meta name="twitter:description" content={description} />
