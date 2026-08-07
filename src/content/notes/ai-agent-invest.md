@@ -1,7 +1,7 @@
 ---
 title: 投资 AI Agent：目前最确定赚钱的，还是卖工具的人
 slug: ai-agent-invest
-description: 真实资金实验里 AI agent 能赢但不稳定，冠军随市场更换；92 万 agent token 持有者合计亏掉 1.9 亿美元，中位用户为负；券商佣金、投顾服务费和卖课收入却有清晰的现金流。回测框架存在 look-ahead bug，中美监管尚无对应规则——卖 AI 投资工具已验证能赚钱，普通用户靠它稳定赚钱还没有同等证据。
+description: 实盘实验显示 AI agent 偶尔能赢，但远未形成稳定策略：真正先赚到钱的是券商、投顾和卖课的人，而普通用户靠它持续赚钱仍待考量。
 date: 2026-08-07T00:00:00+08:00
 topic: AI 前沿
 tags: [AI Agent, 投资, 交易]
