@@ -13,29 +13,51 @@ draft: false
 
 ![请求前缀从断点处被缓存：前缀不变时命中缓存只付读价，任何字节变化则全量重算并重新写入](assets/prompt-cache-prefix-stability/fig1_prefix_cache_mechanism.png)
 
-同一个模型，两个不同的 agent harness（运行 agent 循环、负责拼装每轮请求的框架或客户端），跑各自的真实会话。Claude Code 每轮请求要携带 6.76 万 token 的上下文，OpenClaw 只带 1.85 万。结果却是带得多的一方几乎不花钱：Claude Code 每轮大约付 2 美分，OpenClaw 付 6 美分（数字来自 [Galileo 的 2026 缓存手册](https://galileo.ai/blog/the-2026-caching-playbook-for-agents-bigger-prompts-smaller-bills)，口径差异后面会说到）。
+> **TL;DR**：Prompt Cache 的核心不是「上下文越短越省钱」，而是「前缀能不能跨请求保持稳定」。同一个模型下，两个 agent harness 的缓存命中率可以差出 4 倍，最终成本差 3 倍。真正决定命中率的是请求前缀里放了什么、顺序是否稳定、序列化形状是否一致，以及工具集、模型和压缩流程会不会在会话中途改变前缀。
 
-原因是命中率。Claude Code 的请求里 92.7% 的 token 从缓存读回，每轮只有 296 个 token 需要按原价计算；OpenClaw 每轮 1.85 万 token 里只有 5.2 千是缓存的，1.33 万都是原价。缓存命中率是 agent 成本里最大的杠杆，而它几乎完全不由模型决定，由 harness 决定。
+同一个模型，两个不同的 agent harness（运行 agent 循环、负责拼装每轮请求的框架或客户端），跑各自的真实会话。Claude Code 每轮请求要携带 6.76 万 token 的上下文，OpenClaw 只带 1.85 万。结果却是上下文更长的一方几乎不花钱：Claude Code 每轮大约付 2 美分，OpenClaw 付 6 美分（数字来自 [Galileo 的 2026 缓存手册](https://galileo.ai/blog/the-2026-caching-playbook-for-agents-bigger-prompts-smaller-bills)，口径差异后面会说到）。
 
-这篇文章讲清楚三件事：缓存机制到底怎么工作，为什么同一个模型下命中率能差出 4 倍，以及你自己写的 agent 怎么不踩同样的坑。
+差别在缓存命中率。Claude Code 的请求里，92.7% 的 token 从缓存读回，每轮只有 296 个 token 需要按原价计算；OpenClaw 每轮 1.85 万 token 里只有 5.2 千来自缓存，剩下 1.33 万都按原价计费。
+
+这组数据说明了一个很容易被忽略的问题：在 agent 场景里，上下文有多长未必是成本的第一决定因素。更大的杠杆往往是缓存命中率，而它很大程度上不由模型决定，而由 harness 如何组织请求决定。
+
+这篇文章主要回答三个问题：Prompt Cache 到底缓存了什么；为什么同一个模型下，不同 harness 的命中率能差出 4 倍；以及自己写 agent 时，怎样避免把本来可以复用的缓存主动打碎。
 
 ## 先看模型内部：KV cache
 
-Transformer 每生成一个新 token，注意力机制都要重新访问序列里所有 token 的 Key 和 Value 表示，拿当前查询跟它们做加权求和。这些 K/V 表示只由 token 内容决定，不随生成过程改变：同一个请求里生成第 100 个 token 时，前 99 个 token 的 K/V 跟生成第 50 个 token 时一模一样。推理引擎早就把这一笔算账缓存下来复用，叫作 KV cache，这是 Transformer 服务端的基础优化。
+Transformer 每生成一个新 token，注意力机制都要访问序列中已有 token 的 Key 和 Value 表示，用当前 Query 与它们计算注意力。对于已经处理过的 token，这些 K/V 表示不会因为后续生成而改变：生成第 100 个 token 时，前 99 个 token 的 K/V，和生成第 50 个 token 时对应部分的 K/V 是一样的。
 
-Prompt caching 把同一笔账从「一次生成内部」延伸到「多次请求之间」。请求前缀是相同的字节，前缀 token 算出来的 K/V 就相同，服务端可以把前缀的缓存保存几分钟到一小时，下一个请求直接读。所谓命中，就是这份 K/V 没有重算；写入，就是第一次把前缀算进 K/V 并存起来；miss，就是前缀变了，K/V 全部重算。这也顺带解释了为什么写比读贵：写入付的是把前缀编码进模型内部表示的计算费，读取只是把已存的东西取出来（这是 [第三方解释](https://dev.to/rikuq/anthropic-prompt-caching-explained-cachecontrol-markers-the-two-tier-write-premium-and-when-it-25cp)，Anthropic 官方没有公开定价理由）。
+因此，推理引擎不会每生成一个 token 就重新计算整段历史，而是把已经算过的 K/V 保存下来复用。这就是 KV cache，也是 Transformer 推理服务里的基础优化。
 
-## 缓存机制：前缀匹配、断点、定价
+Prompt caching 可以理解成把这种复用从「一次生成内部」延伸到「多次请求之间」。如果两个请求拥有相同的前缀，那么这段前缀对应 token 计算出来的 K/V 也相同。服务端可以把前一次请求得到的前缀缓存保存几分钟到一小时，下一次请求直接读取，而不再重新计算。
 
-明确了模型内部机制，API 层的规则就好懂了。LLM API 的缓存只认一种东西：请求的前缀。缓存保存的是「从请求第一个字节到某个断点为止的完整内容」，下次请求如果前缀和缓存逐字节一致，就命中；只要有一个字节不一样，这一段就全部作废。Anthropic 的官方表述是 "Prompt caching is a prefix match. Any change anywhere in the prefix invalidates everything after it."（[Claude Code 团队博客](https://claude.com/blog/lessons-from-building-claude-code-prompt-caching-is-everything)）。OpenAI 一侧的表述是 "Cache hits are only possible for exact prefix matches within a prompt."（[OpenAI 文档](https://developers.openai.com/api/docs/guides/prompt-caching)）。两家底层规则相同，差别只在控制方式，后面单独说。
+于是几个计费概念就对应起来了：所谓 cache hit，是已有前缀对应的 K/V 被直接复用；cache write，是第一次计算这段前缀并把结果存进缓存；cache miss，则意味着前缀无法复用，需要重新计算。
 
-命中判定是 hash 判定，不是逐字节滚动比较。Anthropic 的缓存条目是断点前全部字节的累积 hash，一个断点一个条目。hash 已经编码了前缀里的每一个字节：字节一致 hash 就一致，直接命中；前缀里任何一个字节变了 hash 就变，直接 miss，不存在先匹配前面、再逐块验证后面的过程。检查时 API 在断点位置往回看最近 20 个 block，找一个 hash 匹配的位置，这是为了处理断点随对话增长不断前移的情况（[Anthropic 文档](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)）。
+这也能解释为什么 Anthropic 的缓存写入价格高于读取：写入包含了把前缀编码进模型内部表示的计算，而读取只是复用已经存在的结果。不过，这只是[第三方对定价机制的解释](https://dev.to/rikuq/anthropic-prompt-caching-explained-cachecontrol-markers-the-two-tier-write-premium-and-when-it-25cp)，Anthropic 官方并没有公开说明具体的定价理由。
 
-断点（cache breakpoint）是请求里的一个标记，告诉 API「缓存到这儿为止」。Anthropic 的 API 里用 `cache_control` 字段标注，最多 4 个断点，超出直接报错（[官方文档](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)）。缓存按层级失效：工具定义变了，整个缓存作废；system 变了，system 和 messages 作废；messages 变了，只作废 messages。原因很直接：工具定义在请求的最前面，前缀包含它。
+## 缓存机制：前缀匹配、断点和定价
 
-定价结构决定了这一切为什么重要。以 Sonnet 4.6 为例（$3/M input）：往缓存里写入 5 分钟 TTL 的内容，按 1.25 倍算（$3.75/M）；写 1 小时 TTL 的内容，按 2 倍算（$6/M）；从缓存读回，只按 0.1 倍算（$0.30/M）；命中失败，按原价（$3/M）。也就是说，**写一次缓存的钱，够读 12 次**；一个请求哪怕前缀稳定，也要到第二次命中才回本。缓存经济学的全部含义是：尽量少写、尽量多读、前缀绝对别变。
+理解了模型内部的复用逻辑，API 层的规则就简单很多。LLM API 的缓存只认一种东西：请求前缀。
 
-两家的机制差异对比如下：
+缓存保存的是「从请求开头到某个断点为止的完整内容」。下一次请求只要这段前缀与缓存一致，就可以命中；前缀中一旦出现变化，变化位置之后的缓存就无法继续复用。
+
+Anthropic 的官方表述是："Prompt caching is a prefix match. Any change anywhere in the prefix invalidates everything after it."（[Claude Code 团队博客](https://claude.com/blog/lessons-from-building-claude-code-prompt-caching-is-everything)）。OpenAI 的表述则是："Cache hits are only possible for exact prefix matches within a prompt."（[OpenAI 文档](https://developers.openai.com/api/docs/guides/prompt-caching)）。
+
+两家的底层约束是一致的：缓存依赖精确前缀匹配。主要差异在于缓存如何控制，后面会单独比较。
+
+Anthropic 的命中判定可以理解为基于前缀 hash，而不是每次重新逐字节滚动比较。缓存条目对应断点之前全部内容的累积 hash，一个断点对应一个条目。前缀内容一致，hash 就可以匹配；其中任意内容发生变化，对应的 hash 也会变化。检查时，API 会从断点位置向前检查最近 20 个 block，寻找可以复用的匹配位置，这主要是为了处理随着对话增长、断点不断向后移动的情况（[Anthropic 文档](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)）。
+
+所谓断点（cache breakpoint），就是告诉 API「缓存到这里为止」的标记。Anthropic API 使用 `cache_control` 字段显式标注，最多允许 4 个断点，超过会直接报错（[官方文档](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)）。
+
+缓存失效也遵循前缀层级。工具定义变化，后面的 system 和 messages 都会受到影响；system 变化，则 system 和 messages 无法继续复用；只有 messages 后部变化时，前面的 tools 和 system 仍然可能命中。原因并不复杂：Anthropic 请求的顺序本身就是 tools → system → messages，越靠前的内容，影响的后续前缀越长。
+
+真正让这些细节变得重要的是定价。以 Sonnet 4.6 为例（$3/M input）：写入 5 分钟 TTL 的缓存按 1.25 倍计费，即 $3.75/M；写入 1 小时 TTL 按 2 倍，即 $6/M；从缓存读取只按 0.1 倍，即 $0.30/M；如果没有命中，则仍然按原价 $3/M 计算。
+
+换算一下，**写一次 5 分钟缓存的钱，大约够读 12 次**。即使前缀能够稳定复用，也至少要等到后续请求真正命中，写入成本才开始体现价值。
+
+所以缓存经济学其实可以压缩成三句话：少写，多读，尤其不要让已经写进去的稳定前缀因为无关变化反复失效。
+
+两家的机制差异可以放在一起看：
 
 | 维度 | Anthropic | OpenAI |
 |---|---|---|
@@ -45,80 +67,128 @@ Prompt caching 把同一笔账从「一次生成内部」延伸到「多次请�
 | 读取折扣 | 0.1x | 因模型 -50% 到 -90% |
 | TTL | 5 分钟默认，1 小时显式 | 不活跃 5-10 分钟驱逐（最多 1 小时），extended 24 小时 |
 
-## 前缀为什么脆弱
+## 前缀为什么这么脆弱
 
-把机制再推一步，就看得出 agent harness 有多容易被缓存惩罚。
+把前缀匹配这个规则继续往 agent harness 上推，就能看出很多看似无害的实现为什么会把缓存打碎。
 
-**第一，前缀里塞的任何会变的东西，都会连累后面所有稳定内容。** 缓存是累积哈希，断点之前的任意字节变化，整段作废。时间戳、会话状态、环境变量这些「动态内容」，如果放在请求靠前的位置，就是给整个前缀埋雷。
+**第一，前缀里任何会变化的内容，都会影响它后面的稳定内容。** 缓存建立在累积前缀上。时间戳、会话状态、环境变量之类动态信息，如果出现在请求靠前的位置，即使后面几十万 token 都没有变化，也可能因为前面的少量差异而失去复用。
 
-**第二，工具集是前缀的一部分，而且是最前面的一部分。** 请求顺序是 tools → system → messages（[Anthropic 文档](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)）。工具定义一变，整个缓存全废。agent 对话中途加一个工具、删一个工具、改一个参数，等于告诉模型「你之前看到的所有内容都不算数了」。
+**第二，工具集本身就是前缀，而且通常位于最前面。** Anthropic 的请求顺序是 tools → system → messages（[Anthropic 文档](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)）。这意味着 agent 在对话中途新增一个工具、删除一个工具，甚至只是改变工具定义的序列化结果，影响的都不只是工具本身，而是它后面的 system prompt 和历史消息。
 
-**第三，缓存按模型隔离。** 换模型就是换一个缓存，全部重建。Claude Code 团队给过一个反直觉的锚点：对话进行到 10 万 token 时想从 Opus 换到更便宜的 Haiku，重建缓存的成本比让 Opus 继续回答更贵（[同上博客](https://claude.com/blog/lessons-from-building-claude-code-prompt-caching-is-everything)）。
+**第三，缓存按模型隔离。** 中途换模型，相当于切换到另一套缓存，需要重新建立前缀。Claude Code 团队给过一个很反直觉的例子：当对话已经进行到 10 万 token 时，如果此时从 Opus 切换到更便宜的 Haiku，重新建立缓存的成本可能比继续让 Opus 回答还高（[同上博客](https://claude.com/blog/lessons-from-building-claude-code-prompt-caching-is-everything)）。
 
-**第四，压缩（compaction）和缓存天然打架。** 对话太长要摘要时，如果压缩请求用了不同的 system prompt、不带工具，前缀在第一个 token 就分叉，整段对话按全价重算。对话越长，这个重算越贵，形成一个正反馈死局。
+**第四，压缩（compaction）和缓存很容易互相冲突。** 对话太长以后通常需要摘要。如果压缩请求换了一套 system prompt，或者不再携带原有工具，那么请求从前缀开头就已经分叉，历史对话无法继续复用，只能重新按普通输入计算。对话越长，这次重算越贵。
 
-这四条推论组合起来，等于一份「事故清单」：凡是往请求前面塞动态内容、中途动工具、换模型、压缩时重造前缀的 harness，命中率必然低。下面看真实世界里这些事故是怎么发生的，以及代价有多大。
+这四点基本覆盖了 agent 中最常见的缓存事故：动态内容放得太靠前、中途修改工具集、切换模型，以及为了压缩上下文重新构造一套请求。下面七个真实案例，可以看到这些问题具体是怎样发生的。
 
 ## 七种真实事故
 
-下面七个案例全部来自 GitHub issue 或 pull request，数字取自原帖，其中事故三和事故四我逐字核对过原 issue 的数字表。
+下面七个案例全部来自 GitHub issue 或 pull request，数字取自原帖。其中事故三和事故四的数字表，我逐字核对过原 issue。不同案例的材料强度并不完全相同：有的是项目维护者提交的修复，有的是 issue 作者的抓包和本地 patch，也有第三方代码审计。下文会保留这些来源层级，不把它们当成同一种证据。
 
 ![两种前缀布局：静态内容在前、断点位于静态末尾、动态内容沉底时前缀可复用；动态内容混入静态区时每轮变化导致缓存失效](assets/prompt-cache-prefix-stability/fig2_prefix_layout_compare.png)
 
 ### 事故一：动态内容放在静态内容前面
 
-OpenClaw 的系统 prompt 里，`## Messaging`、`## Group Chat Context` 这些随频道变化的 section 被放在了大型静态 `# Project Context` 之前（[PR #40296](https://github.com/openclaw/openclaw/pull/40296)）。频道上下文每请求不同，而它在前缀最前面，导致每个请求都全量 miss。重排顺序之后，命中率从 10-16% 升到 95%+，后续 turn 延迟从 10-16 秒降到 1-2 秒。
+OpenClaw 的 system prompt 里，`## Messaging`、`## Group Chat Context` 这类会随着频道变化的 section，被放在了大型静态 `# Project Context` 之前（[PR #40296](https://github.com/openclaw/openclaw/pull/40296)）。
 
-请求里最前面的位置只放永远不变的东西，会变的内容沉到末尾。
+问题不在于这些动态信息本身有多大，而在于它们出现得太早。频道上下文每次请求都可能变化，于是它后面的整段 Project Context 也无法稳定复用。
+
+调整顺序后，命中率从 10-16% 提升到 95%+，后续 turn 的延迟从 10-16 秒降到 1-2 秒。
+
+这里的规则很简单：请求最前面尽量只放长期不变的内容，越容易变化的信息越往后放。
 
 ### 事故二：动态信息注入 system prompt
 
-NousResearch 的 Hermes agent 把 `pre_llm_call` 插件召回的记忆直接注入 system prompt（[PR #5146](https://github.com/NousResearch/hermes-agent/pull/5146)）。不同查询召回不同记忆，system prompt 每轮都变，缓存每轮都 miss。修复是把所有插件上下文改到当前 turn 的 user message 里，system prompt 保持逐字节不变。
+NousResearch 的 Hermes agent 把 `pre_llm_call` 插件召回的记忆直接注入 system prompt（[PR #5146](https://github.com/NousResearch/hermes-agent/pull/5146)）。
 
-给模型传动态信息，走下一轮消息，别动 system prompt。
+记忆召回天然依赖当前查询，不同 turn 返回的内容不同。于是即使真正的基础 system prompt 没有变化，最终发送给模型的 system prompt 仍然每轮不同，缓存也就跟着失效。
 
-### 事故三：同一份内容，跨 turn 两种形状
+修复方式是把插件生成的动态上下文移到当前 turn 的 user message 中，让 system prompt 保持逐字节稳定。
 
-Claude Code 的 PostToolUse hook 返回的 `additionalContext`，在 hook 触发当轮被包成 `<system-reminder>` 文本块塞进 tool_result 消息，从下一轮起却变成独立的 `role: "system"` 消息（[issue #81077](https://github.com/anthropics/claude-code/issues/81077)）。
+动态状态不是不能传，而是不要让它污染长期稳定的 system 前缀。
+
+### 事故三：同一份内容，跨 turn 变成两种形状
+
+Claude Code 的 PostToolUse hook 返回 `additionalContext` 后，在 hook 触发的当轮，这段内容会被包装成 `<system-reminder>` 文本块，塞进 tool_result 消息；到了下一轮，它却会变成一条独立的 `role: "system"` 消息（[issue #81077](https://github.com/anthropics/claude-code/issues/81077)）。
 
 ![对话消息流中，同一段 hook 上下文在 turn N 是 system-reminder 包裹形状，turn N+1 变成独立 system 消息，从变化点之后的缓存全部失效](assets/prompt-cache-prefix-stability/fig3_shape_mismatch.png)
 
-同一份内容两种序列化形状，而它落在历史深处，把这条消息之后的缓存全部打碎。实测数据：跨 turn 边界时 cache read 从 143,250 掉到 6,472，一次全量写入 140,916 token。作者还做了对照组：没有 hook 上下文需要转换的 turn 边界只写了 2,468 token，证明成本来自重序列化本身。
+内容本身没有变，但序列化形状变了。更麻烦的是，这段内容已经落在历史消息深处，因此变化位置之后的缓存都会受到影响。
 
-同一份内容，什么时候发送，序列化形状都得一样。
+原 issue 给出的实测数据很直观：跨 turn 边界时，cache read 从 143,250 token 掉到 6,472，同时发生了一次 140,916 token 的全量写入。作者还做了对照：没有 hook 上下文需要转换的 turn 边界，只写入了 2,468 token。这个对照说明，额外成本来自历史内容的重序列化，而不是单纯因为新一轮请求增加了内容。
 
-### 事故四：进前缀的集合不排序
+对于进入缓存前缀的数据，稳定的不只是「语义」，还包括它最终发送给 API 的结构和序列化形状。
 
-Claude Code 内置的 Agent 工具描述会枚举可用 subagent 类型，枚举顺序来自无序集合（[issue #49038](https://github.com/anthropics/claude-code/issues/49038)）。Agent 是 tools[0]，它后面的所有工具定义、system、消息前缀全部失效。作者抓包确认 45 秒内两次请求只有 tools[0] 不同：32 个 subagent 换了顺序。resume 会话时 cache_create 从 56,296 token 降到修复后的 32 token，约 1750 倍。这个 issue 最终 closed as not planned，作者自己 patch 了包。
+### 事故四：进前缀的集合没有排序
 
-进前缀的集合（工具、subagent 列表、技能列表），序列化前按名字排序。
+Claude Code 内置的 Agent 工具描述会枚举可用的 subagent 类型，而这个枚举顺序来自无序集合（[issue #49038](https://github.com/anthropics/claude-code/issues/49038)）。
+
+Agent 恰好又是 `tools[0]`。于是只要 32 个 subagent 的排列顺序发生变化，变化就出现在整个请求非常靠前的位置，后面的工具定义、system prompt 和消息前缀都会受到影响。
+
+issue 作者抓包确认，在相隔 45 秒的两次请求里，唯一变化就是 `tools[0]` 中 32 个 subagent 的顺序。resume 会话时，`cache_create` 从 56,296 token 降到修复后的 32 token，相差约 1750 倍。
+
+这个 issue 最终被 closed as not planned，作者选择自己 patch 包，因此这里应当把它看作 issue 作者的抓包和本地修复结果，而不是官方已经合入的修复。
+
+工程上的处理也不复杂：任何会进入缓存前缀的集合——工具、subagent、技能列表——在序列化之前都应该使用确定性顺序，例如统一按名字排序。
 
 ### 事故五：会话中途动工具、换模型
 
-Roo Code 给 Opus 4.5 的缓存开关里漏了这个模型 ID，导致它完全不缓存（[PR #9568](https://github.com/RooCodeInc/Roo-Code/pull/9568)）。同类事故还有 Roo Code 在 Bedrock 自定义 ARN 时缺了 `cachableFields` 字段，命中率静默掉到 0%，没有报错（[issue #11983](https://github.com/RooCodeInc/Roo-Code/issues/11983)）。模型层面，Claude Code 团队明确说中途换模型等于重建缓存（见上文 10 万 token 锚点），正确做法是用 subagent 做模型切换，让便宜模型跑在自己的上下文里，主对话的前缀不动。
+Roo Code 给 Opus 4.5 的缓存开关里漏掉了这个模型 ID，导致该模型完全没有启用缓存（[PR #9568](https://github.com/RooCodeInc/Roo-Code/pull/9568)）。
 
-会话中途别动工具集和模型；状态转换用工具建模（把 Plan Mode 做成可调用的工具），而不是增删工具。
+另一个类似问题发生在 Roo Code 的 Bedrock 自定义 ARN 上：请求缺少 `cachableFields` 字段后，缓存命中率会静默掉到 0%，同时没有报错（[issue #11983](https://github.com/RooCodeInc/Roo-Code/issues/11983)）。
 
-### 事故六：压缩重造前缀
+模型切换则是另一个层面的问题。Claude Code 团队明确指出，会话中途换模型相当于重建缓存。前面提到的 10 万 token 例子，就是这种成本的一个锚点。
 
-naive compaction 用「不同的 system prompt、不带工具」的独立调用去摘要对话，前缀第一 token 就分叉，整段对话按全价输入重算（[Claude Code 团队博客](https://claude.com/blog/lessons-from-building-claude-code-prompt-caching-is-everything)）。正确做法是 fork：用和父对话完全相同的 system prompt、上下文和工具定义，把压缩 prompt 作为新的 user message 追加，这样父对话的缓存前缀被复用，只有压缩 prompt 本身是新 token。这个模式现在已内建进 Anthropic 的 [server-side compaction API](https://platform.claude.com/docs/en/build-with-claude/compaction)，官方指引是在 system prompt 末尾放一个断点，把 system 和对话分开缓存，这样压缩发生时只有摘要需要新写。
+因此，如果只是希望某个子任务使用更便宜的模型，更合理的方式通常不是修改主会话的模型，而是让 subagent 在自己的上下文里运行。这样主对话的模型和前缀都不需要变化。
 
-压缩本身也要保持前缀：摘要请求复用父对话的 system 和工具，或者用服务端 compaction 的缓存分区。
+工具集也是同样的逻辑。状态转换最好用工具调用本身来建模，例如把 Plan Mode 设计成可调用工具，而不是进入某个状态后动态增删整套工具定义。
 
-### 事故七：断点打在必变的内容上
+### 事故六：压缩时重新造了一套前缀
 
-这是流传最广的一类。Cline、Roo Code、Continue 三个 harness 的 Anthropic 请求转换代码里，`cache_control` 断点打在「最后 2 条 user 消息」上，而最后一条 user 消息正是当前 turn，每请求必变（[prompt-cache-skills 审计](https://github.com/OnlyTerp/prompt-cache-skills)）。结果断点永远落在会变化的内容上，缓存块无法复用，每轮付 1.25 倍写溢价、零读取，比不开缓存更贵。三个 harness 的修复是同一行：断点移到当前 turn 之前最后一条稳定消息。这个 bug 是复制粘贴传播的，官方都没有修。
+一种 naive compaction 的实现方式是：单独发起一次摘要调用，使用不同的 system prompt，并且不携带原来的工具。问题在于，这样的压缩请求从前缀开头就已经和父对话不同，整段历史无法复用，只能重新按普通输入计算（[Claude Code 团队博客](https://claude.com/blog/lessons-from-building-claude-code-prompt-caching-is-everything)）。
 
-断点要标记在跨请求不变的内容上。一个简单的自查：「这条消息在下一个请求里还会原样存在吗」。
+更适合缓存的方式是 fork：保留父对话完全相同的 system prompt、上下文和工具定义，只把「请压缩当前对话」作为新的 user message 追加进去。这样父对话已有的缓存前缀可以继续复用，真正新增的只有压缩 prompt。
 
-## 对你的 agent 做什么
+这个模式现在也已经进入 Anthropic 的 [server-side compaction API](https://platform.claude.com/docs/en/build-with-claude/compaction)。官方指引是在 system prompt 末尾放置一个断点，把 system 与对话分别缓存，这样发生压缩时，需要新写入的主要是摘要部分，而不是重新计算整个稳定前缀。
 
-1. **请求日志里看两个数字**：`cache_read_input_tokens` 和 `cache_creation_input_tokens`（Anthropic usage 字段）。creation 居高不下，几乎总是前缀里有东西在变。
-2. **把请求结构画出来**：请求最前面 20% 的字节（system prompt、工具定义、静态上下文），每一块问一句「这个内容在两个连续请求之间会变吗」。会变的，移到后面。
-3. **集合序列化前排序**。工具、subagent 列表、技能列表，统一按名字排序，别依赖遍历序。
-4. **动态信息走消息，不走 system prompt**。时间、环境状态、权限变化，放进下一轮 user message 或 tool result。
-5. **会话中途冻结工具集和模型**。状态转换用工具建模；换模型用 subagent。
-6. **压缩时复用父对话前缀**，或者用服务端 compaction 并在 system 末尾放断点。
-7. **断点打在不变量上**。写完代码后自问：这条被打断点的消息，下一个请求里还逐字节存在吗？
+换句话说，压缩不是缓存体系之外的一次特殊调用。压缩流程本身也应该遵守前缀稳定原则。
 
-最后回到开头的对比。同一个模型，Claude Code 和 OpenClaw 的命中率差了 4 倍，成本差了 3 倍，前缀大小差的倍数反而无关紧要。命中率由前缀里有什么、以什么顺序、什么形状存在决定。你下一次看到自家 agent 的 cache_create 数字居高不下，第一反应应该是「前缀里有什么在变」，而不是「换个模型试试」。
+### 事故七：断点打在必然变化的内容上
+
+这一类问题传播得最广。Cline、Roo Code 和 Continue 三个 harness 的 Anthropic 请求转换代码里，`cache_control` 断点被打在「最后 2 条 user 消息」上，而最后一条 user 消息恰好就是当前 turn，每次请求都会变化（[prompt-cache-skills 审计](https://github.com/OnlyTerp/prompt-cache-skills)）。
+
+结果是断点长期落在不稳定内容上：每一轮都可能重新写缓存，却很难在下一轮复用对应缓存块。在 Anthropic 的 5 分钟缓存定价下，这意味着持续支付 1.25 倍的写入价格，却拿不到预期的读取折扣，极端情况下甚至比不使用缓存更贵。
+
+三个 harness 在该审计中的修复思路相同：把断点从当前 turn 移到它之前最后一条稳定消息。
+
+需要注意的是，这里的材料来自第三方代码审计，原文称这个 bug 通过复制粘贴传播，且官方都没有修。因此它和前面已经进入项目 PR 的案例不是同一层级的来源。
+
+判断一个断点是否合理，可以问一个非常具体的问题：**这条消息在下一个请求中，还会以完全相同的内容和形状存在吗？**
+
+## 对自己的 agent 应该检查什么
+
+如果自己维护 agent harness，不需要先做复杂的缓存优化。先检查几个最容易出问题的地方，通常就能找到大部分 miss 的来源。
+
+1. **先看请求日志里的两个数字。** Anthropic usage 中重点关注 `cache_read_input_tokens` 和 `cache_creation_input_tokens`。如果 creation 长期居高不下，而对话又在连续进行，优先怀疑前缀中存在不必要的变化。
+
+2. **把请求结构按顺序画出来。** 尤其检查请求最前面的 system prompt、工具定义和静态上下文。对每一块都问一句：它在两个连续请求之间会不会变？如果会，而且没有必须放在前面的理由，就应该考虑往后移动。
+
+3. **进入前缀的集合必须确定性序列化。** 工具、subagent 列表、技能列表统一排序，不要依赖 map、set 或文件遍历产生的偶然顺序。
+
+4. **动态信息走消息，不要污染 system prompt。** 当前时间、环境状态、召回记忆、权限变化之类信息，更适合进入当前 user message 或 tool result，而不是修改长期稳定的 system prompt。
+
+5. **主会话中途尽量冻结工具集和模型。** 状态转换用工具建模；确实需要使用其他模型时，可以让 subagent 维护独立上下文，避免破坏主对话已有缓存。
+
+6. **压缩时复用父对话前缀。** 自己实现 compaction 时，尽量保留父对话的 system 和工具；使用服务端 compaction 时，则按照缓存分区设计断点。
+
+7. **断点只打在真正稳定的内容上。** 写完以后直接验证：被标记的这段内容，在下一轮请求里是否仍然逐字节、逐结构保持一致？
+
+最后再回到开头那个看似反直觉的对比：Claude Code 每轮携带 6.76 万 token，OpenClaw 只有 1.85 万，但前者命中率高出约 4 倍，最终每轮成本反而只有后者的三分之一左右。
+
+这也是 Prompt Cache 最值得记住的一点：**前缀大小不是最关键的变量，前缀稳定性才是。**
+
+缓存是否能复用，取决于前缀里放了什么、按什么顺序排列、以什么序列化形状存在，以及会话中途有没有修改工具、模型或压缩方式。
+
+所以下一次看到自己的 agent `cache_creation_input_tokens` 长期居高不下，第一反应不应该是「是不是上下文太长」或者「换个模型试试」，而应该先检查一个更基础的问题：
+
+**前缀里，到底有什么东西在变？**
