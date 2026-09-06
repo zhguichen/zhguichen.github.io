@@ -1,14 +1,17 @@
 ---
+import type { Lang } from '../lib/notes';
+
 interface Props {
   tags: string[];
+  lang?: Lang;
 }
 
-const { tags } = Astro.props;
+const { tags, lang = 'en' } = Astro.props;
 ---
 
 {
   tags.length > 0 && (
-    <ul class="tag-list" aria-label="标签">
+    <ul class="tag-list" aria-label={lang === 'zh' ? '标签' : 'Tags'}>
       {tags.map((tag) => <li>{tag}</li>)}
     </ul>
   )

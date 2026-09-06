@@ -1,5 +1,5 @@
 ---
-import type { Note } from '../lib/notes';
+import type { Note, Lang } from '../lib/notes';
 import { formatDate, readingTime } from '../lib/notes';
 import TagList from './TagList.astro';
 
@@ -7,9 +7,11 @@ interface Props {
   notes: Note[];
   compact?: boolean;
   minimal?: boolean;
+  lang?: Lang;
 }
 
-const { notes, compact = false, minimal = false } = Astro.props;
+const { notes, compact = false, minimal = false, lang = 'en' } = Astro.props;
+const base = lang === 'zh' ? '/zh/notes' : '/notes';
 ---
 
 <ol class:list={['note-list', { 'note-list--compact': compact }]}>
@@ -18,15 +20,15 @@ const { notes, compact = false, minimal = false } = Astro.props;
       <li>
         <article class="note-row">
           <div class="note-meta">
-            <time datetime={note.data.date.toISOString()}>{formatDate(note.data.date)}</time>
+            <time datetime={note.data.date.toISOString()}>{formatDate(note.data.date, lang)}</time>
             <span>{note.data.topic}</span>
           </div>
           <div class="note-main">
-            <h3><a href={`/notes/${note.data.slug}/`}>{note.data.title}</a></h3>
+            <h3><a href={`${base}/${note.data.slug}/`}>{note.data.title}</a></h3>
             {!minimal && !compact && <p>{note.data.description}</p>}
             {!minimal && <div class="note-bottom">
               <TagList tags={note.data.tags} />
-              <span class="reading-time">{readingTime(note)} 分钟阅读</span>
+              <span class="reading-time">{readingTime(note)} {lang === 'zh' ? '分钟阅读' : 'min read'}</span>
             </div>}
           </div>
         </article>

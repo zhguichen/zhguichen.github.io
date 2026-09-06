@@ -1,9 +1,10 @@
 ---
 title: Mem0 融了 2400 万美元，也存下了 97.8% 的垃圾
 slug: mem0-97-percent-garbage
+lang: zh
 description: Mem0 宣布完成 2400 万美元融资的同时，一份独立审计显示它 32 天存下的 10134 条记忆里 97.8% 是垃圾：agent 记忆的商业化跑在了可验证的质量前面。
 date: 2026-08-05T00:00:00+08:00
-cover: ./assets/mem0-memory-junk/hero.jpg
+cover: ../assets/mem0-memory-junk/hero.jpg
 topic: AI 工程
 tags: [AI Agent, 记忆, 商业化]
 featured: false
@@ -14,7 +15,7 @@ draft: false
 
 > **TL;DR：** Agent 记忆的需求是真的，成本和跨会话价值也是真的，但今天这个市场最缺的不是产品，而是可信的质量验证。一份针对 Mem0 的生产审计发现，32 天存下的 10,134 条记忆中 97.8% 被判定为垃圾；与此同时，融资、云调用量和平台集成都在快速增长。问题不只在 Mem0：厂商自报 benchmark 与独立复现存在明显差距，主流评测本身也受到数据错误、LLM 裁判偏差和上下文窗口膨胀的影响。商业化已经发生，但「什么样的记忆系统真的有效」仍没有稳定答案。
 
-![堆满揉皱废纸的巨大记忆仓库中，只有角落一小格货架放着金条，象征 97.8% 垃圾与少量真实价值](assets/mem0-memory-junk/hero.jpg)
+![堆满揉皱废纸的巨大记忆仓库中，只有角落一小格货架放着金条，象征 97.8% 垃圾与少量真实价值](../assets/mem0-memory-junk/hero.jpg)
 
 2026 年 3 月 27 日，GitHub 上出现了一份很难忽略的 agent 记忆生产审计。一名开发者在自己的配置中接入 Mem0，连续运行 32 天，再用脚本剔除重复条目，逐条检查剩下的 6,264 条记忆。
 
@@ -57,7 +58,7 @@ Mem0 的默认流程，是让模型根据一个相对宽松的提示词把对话
 
 ## 评测系统本身也不可靠
 
-![一排指针乱转、表盘碎裂、刻度互相矛盾的测量仪表，代表记忆层评测体系整体失灵](assets/mem0-memory-junk/bench-broken.jpg)
+![一排指针乱转、表盘碎裂、刻度互相矛盾的测量仪表，代表记忆层评测体系整体失灵](../assets/mem0-memory-junk/bench-broken.jpg)
 
 理论上，benchmark 应该承担这个角色。现实却是，agent 记忆领域的评测结果已经很难直接横向比较。
 

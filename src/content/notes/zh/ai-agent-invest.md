@@ -1,9 +1,10 @@
 ---
 title: 投资 agent 真的能帮我赚钱吗？
 slug: ai-agent-invest
+lang: zh
 description: 实盘实验显示 AI agent 偶尔能赢，但远未形成稳定策略：真正先赚到钱的是券商、投顾和卖课的人，而普通用户靠它持续赚钱仍待考量。
 date: 2026-08-07T00:00:00+08:00
-cover: ./assets/ai-agent-invest/champions.png
+cover: ../assets/ai-agent-invest/champions.png
 topic: AI 前沿
 tags: [AI Agent, 投资, 交易]
 featured: false
@@ -37,7 +38,7 @@ Nof1 Alpha Arena 第一季从 2025 年 10 月 18 日跑到 11 月 3 日，6 个�
 
 但在另一个市场里，排名马上反了过来。HKUDS 的 [AI-Trader](https://github.com/HKUDS/AI-Trader) 用各 $1 万交易纳指 100 成分股时，DeepSeek 反而以 +10.61% 排名第一。同一个模型，在美股实验里最好，在外汇实验里却最差。
 
-![四场真实资金实验的冠军收益：Qwen3-Max 22.32%、Grok 4.2 12.11%、Qwen 9.9%、DeepSeek 10.61%，冠军每次不同](assets/ai-agent-invest/champions.png)
+![四场真实资金实验的冠军收益：Qwen3-Max 22.32%、Grok 4.2 12.11%、Qwen 9.9%、DeepSeek 10.61%，冠军每次不同](../assets/ai-agent-invest/champions.png)
 
 这几场实验至少证明了一件事：**AI 可以在某一段市场环境里赚钱，但目前没有证据证明某个模型拥有可以跨市场、跨周期复现的稳定 alpha。**
 
@@ -55,11 +56,11 @@ IC3 的研究 [Paper Agents, Paper Gains](https://arxiv.org/abs/2605.29174) 审�
 
 结果非常极端：这些 agent 金库账面浮盈超过 $30M，但持有者合计亏损 $191.7M。用户累计收益一度达到约 $2.4B，随后全部回吐并转成净亏损。收益分布也高度集中，top 1% 的钱包拿走了 81.4% 的收益，而每个平台的中位用户收益都是负数。
 
-![左：金库账面浮盈 3000 万美元，持有者合计净亏 1.917 亿美元；右：收益的 81.4% 流向 top 1% 钱包，中位收益为负](assets/ai-agent-invest/ic3-ledger.png)
+![左：金库账面浮盈 3000 万美元，持有者合计净亏 1.917 亿美元；右：收益的 81.4% 流向 top 1% 钱包，中位收益为负](../assets/ai-agent-invest/ic3-ledger.png)
 
 Token 本身的表现同样不好。样本中的 agent token 相比历史高点平均下跌约 93%，同期 SOL 的回撤是 54%。研究还发现，大量所谓 agent 实际上并没有进行自主交易，17,000 多个启动量中的多数只是简单 API integration。
 
-![较高点跌幅：elizaOS 97%、agent token 平均 93%、VIRTUAL 89%、同期 SOL 54%](assets/ai-agent-invest/token-drawdowns.png)
+![较高点跌幅：elizaOS 97%、agent token 平均 93%、VIRTUAL 89%、同期 SOL 54%](../assets/ai-agent-invest/token-drawdowns.png)
 
 明星项目也没有改变这个结果。ai16z 后来更名为 elizaOS，经历 token 迁移之后，2026 年 8 月项目方与集体诉讼达成和解，创始人宣布 token “dead”，价格较峰值跌幅超过 97%；VIRTUAL 较历史高点也一度下跌约 89%。
 
@@ -101,7 +102,7 @@ Coinbase 的模式更加直接。2026 年 6 月上线 Coinbase for Agents 后，
 
 与此同时，退款率也很高。2024 年整体退款率为 21.8%，2024 年上半年旗舰系列一度达到 30.3%，2025 年上半年继续升到 24.6%。一个很有意思的对照是，九方自己的金融投资业务在 2024 年亏损了 6408 万元。
 
-![九方智投 2024 年收入 23.06 亿、营销开支 10.6 亿、净利 2.72 亿；退款率从 21.8% 升至 24.6%](assets/ai-agent-invest/jiufang-fin.png)
+![九方智投 2024 年收入 23.06 亿、营销开支 10.6 亿、净利 2.72 亿；退款率从 21.8% 升至 24.6%](../assets/ai-agent-invest/jiufang-fin.png)
 
 这些数字组合在一起，比任何宣传文案都更能解释这门生意：高毛利、高营销投入、高退款率，同时收入快速增长。它的核心商业能力是获客、销售和提供投顾服务，并不要求客户最终必须靠这些工具赚到钱。
 

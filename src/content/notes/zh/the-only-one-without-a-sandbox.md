@@ -1,6 +1,7 @@
 ---
 title: 唯一没有沙箱的那一家，把"没有沙箱"写进了官方文档
 slug: the-only-one-without-a-sandbox
+lang: zh
 description: Claude Code、Cursor、Codex、OpenCode 四款 coding agent 在沙箱与安全拦截上的对照：边界放在哪一层，失效时谁能看见。
 date: 2026-08-05T00:00:00+08:00
 topic: AI 工程

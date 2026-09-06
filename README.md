@@ -1,33 +1,53 @@
 # Jason's Notes
 
-一个中文优先的技术研究笔记站点，记录 AI 工程、Agent、RAG、开源工具与算法等主题。使用 Astro 在构建期输出静态文件；浏览器端没有 React、Vue 或主题运行时。
+A bilingual (English-first) technical research-notes site about AI engineering, agents, RAG, open-source tools, and algorithms. Built with Astro, output as static files at build time; no React, Vue, or client-side runtime.
 
-## 本地开发
+## Local development
 
 ```bash
 npm install
 npm run dev
 ```
 
-构建生产文件：
+Build for production:
 
 ```bash
 npm run build
 ```
 
-构建结果位于 `dist/`。推送到 `main` 分支后，GitHub Actions 会构建并通过 GitHub Pages 发布。
+The build output is in `dist/`. Pushing to `main` triggers a GitHub Actions build and publishes via GitHub Pages.
 
-## 写一篇笔记
+## Bilingual structure
 
-在 `src/content/notes/` 新建一个 Markdown 文件：
+The site is English-first by default. Every note lives in one of two language folders inside `src/content/notes/`:
+
+```
+src/content/notes/
+  en/   # English versions
+  zh/   # Chinese versions
+  assets/  # shared images, referenced with ../assets/...
+```
+
+URLs follow this convention:
+
+- English: `/notes/<slug>/`
+- Chinese: `/zh/notes/<slug>/`
+- Root `/` is the English homepage; `/zh/` is the Chinese homepage.
+
+Each note declares its language in front matter with `lang: en` or `lang: zh`. A note can exist in only one language (e.g., older algorithm notes are Chinese-only), but the recommended practice is to publish both.
+
+## Writing a note
+
+Create a Markdown file in `src/content/notes/zh/` (and the matching English version in `src/content/notes/en/`):
 
 ```yaml
 ---
 title: 文章标题
 slug: english-url-slug
+lang: zh
 description: 用一句话说明文章解决的问题。
 date: 2026-08-03T12:00:00+08:00
-cover: ./assets/example/hero.png
+cover: ../assets/example/hero.png
 topic: 算法
 tags: [算法, C++]
 featured: false
@@ -35,18 +55,21 @@ draft: false
 ---
 ```
 
-`description` 是文章在首页、列表页、RSS 和搜索摘要中的简介。建议只写一句话，先给出文章的核心判断，再补充最关键的事实或结论；不要重复标题，也不要把正文中的所有数据、背景和论据都塞进去。整体控制在简洁、易读的长度，例如：`机器人会跑不等于会干活：近期真正能规模化落地的更可能是工厂和仓库。`
-
-`cover` 是文章的分享图和封面图，路径相对于当前 Markdown 文件；Astro 会在构建时处理它。文章正文中的图片可以放在同一文章目录下的 `assets/` 中，并使用相对路径引用：
+- `slug` is shared across the two languages and becomes the URL path.
+- `lang` is `en` or `zh`.
+- `description` is the summary used on the homepage, list pages, RSS, and search. Keep it to one sentence: state the core claim first, then the most important fact or conclusion. Don't repeat the title, and don't cram every number, background, and argument in. Keep it short and readable. For example: `机器人会跑不等于会干活：近期真正能规模化落地的更可能是工厂和仓库。`
+- `cover` is the share and cover image, relative to the current Markdown file; Astro processes it at build time. Images in the article body go in the same article's `assets/` directory (under `src/content/notes/assets/`) and are referenced with a relative path:
 
 ```markdown
-![图片说明](assets/example/hero.png)
+![图片说明](../assets/example/hero.png)
 ```
 
-如果图片位于 `public/`，可以使用 `coverUrl` 指定分享图：
+If an image lives in `public/`, use `coverUrl` for the share image:
 
 ```yaml
 coverUrl: /images/notes/example/hero.png
 ```
 
-有 `cover` 或 `coverUrl` 时，文章的 Open Graph 和 Twitter 分享图会使用它；没有指定时使用 `public/og-default.png`。`draft: true` 的文章会保留在仓库中，但不会生成公开页面、RSS 或站点地图。
+With `cover` or `coverUrl`, the article's Open Graph and Twitter share image uses it; otherwise `public/og-default.png` is used. Notes marked `draft: true` stay in the repo but don't generate public pages, RSS, or sitemap entries.
+
+When publishing, add the English version in `src/content/notes/en/` with the same `slug`, `lang: en`, and a `description` in English.

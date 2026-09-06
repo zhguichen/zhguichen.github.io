@@ -1,9 +1,10 @@
 ---
 title: Prompt Cache 的原理：命中率由前缀稳定决定
 slug: prompt-cache-prefix-stability
+lang: zh
 description: 同一模型下缓存命中率能差出 4 倍，不是模型问题：前缀字节稳定性决定命中率。讲清缓存机制、七种真实破缓存事故，以及怎么不踩坑。
 date: 2026-08-06T00:00:00+08:00
-cover: ./assets/prompt-cache-prefix-stability/fig1_prefix_cache_mechanism.png
+cover: ../assets/prompt-cache-prefix-stability/fig1_prefix_cache_mechanism.png
 topic: AI 工程
 tags: [Prompt Caching, Agent, LLM]
 featured: false
@@ -12,7 +13,7 @@ draft: false
 
 # Prompt Cache 的原理：命中率由前缀稳定决定
 
-![请求前缀从断点处被缓存：前缀不变时命中缓存只付读价，任何字节变化则全量重算并重新写入](assets/prompt-cache-prefix-stability/fig1_prefix_cache_mechanism.png)
+![请求前缀从断点处被缓存：前缀不变时命中缓存只付读价，任何字节变化则全量重算并重新写入](../assets/prompt-cache-prefix-stability/fig1_prefix_cache_mechanism.png)
 
 > **TL;DR**：Prompt Cache 的核心不是「上下文越短越省钱」，而是「前缀能不能跨请求保持稳定」。同一个模型下，两个 agent harness 的缓存命中率可以差出 4 倍，最终成本差 3 倍。真正决定命中率的是请求前缀里放了什么、顺序是否稳定、序列化形状是否一致，以及工具集、模型和压缩流程会不会在会话中途改变前缀。
 
@@ -86,7 +87,7 @@ Anthropic 的命中判定可以理解为基于前缀 hash，而不是每次重�
 
 下面七个案例全部来自 GitHub issue 或 pull request，数字取自原帖。其中事故三和事故四的数字表，我逐字核对过原 issue。不同案例的材料强度并不完全相同：有的是项目维护者提交的修复，有的是 issue 作者的抓包和本地 patch，也有第三方代码审计。下文会保留这些来源层级，不把它们当成同一种证据。
 
-![两种前缀布局：静态内容在前、断点位于静态末尾、动态内容沉底时前缀可复用；动态内容混入静态区时每轮变化导致缓存失效](assets/prompt-cache-prefix-stability/fig2_prefix_layout_compare.png)
+![两种前缀布局：静态内容在前、断点位于静态末尾、动态内容沉底时前缀可复用；动态内容混入静态区时每轮变化导致缓存失效](../assets/prompt-cache-prefix-stability/fig2_prefix_layout_compare.png)
 
 ### 事故一：动态内容放在静态内容前面
 
@@ -112,7 +113,7 @@ NousResearch 的 Hermes agent 把 `pre_llm_call` 插件召回的记忆直接注�
 
 Claude Code 的 PostToolUse hook 返回 `additionalContext` 后，在 hook 触发的当轮，这段内容会被包装成 `<system-reminder>` 文本块，塞进 tool_result 消息；到了下一轮，它却会变成一条独立的 `role: "system"` 消息（[issue #81077](https://github.com/anthropics/claude-code/issues/81077)）。
 
-![对话消息流中，同一段 hook 上下文在 turn N 是 system-reminder 包裹形状，turn N+1 变成独立 system 消息，从变化点之后的缓存全部失效](assets/prompt-cache-prefix-stability/fig3_shape_mismatch.png)
+![对话消息流中，同一段 hook 上下文在 turn N 是 system-reminder 包裹形状，turn N+1 变成独立 system 消息，从变化点之后的缓存全部失效](../assets/prompt-cache-prefix-stability/fig3_shape_mismatch.png)
 
 内容本身没有变，但序列化形状变了。更麻烦的是，这段内容已经落在历史消息深处，因此变化位置之后的缓存都会受到影响。
 

@@ -3,12 +3,18 @@ import { formatDateISO, getPublishedNotes } from '../lib/notes';
 
 export const GET: APIRoute = async ({ site }) => {
   const base = site ?? new URL('https://zhguichen.github.io');
-  const notes = await getPublishedNotes();
+  const enNotes = await getPublishedNotes('en');
+  const zhNotes = await getPublishedNotes('zh');
+  const latest = enNotes[0]?.data.updated ?? enNotes[0]?.data.date ?? zhNotes[0]?.data.date;
   const pages = [
-    { path: '/', date: notes[0]?.data.updated ?? notes[0]?.data.date },
-    { path: '/notes/', date: notes[0]?.data.updated ?? notes[0]?.data.date },
+    { path: '/', date: latest },
+    { path: '/notes/', date: latest },
     { path: '/about/' },
-    ...notes.map((note) => ({ path: `/notes/${note.data.slug}/`, date: note.data.updated ?? note.data.date }))
+    { path: '/zh/', date: latest },
+    { path: '/zh/notes/', date: latest },
+    { path: '/zh/about/' },
+    ...enNotes.map((note) => ({ path: `/notes/${note.data.slug}/`, date: note.data.updated ?? note.data.date })),
+    ...zhNotes.map((note) => ({ path: `/zh/notes/${note.data.slug}/`, date: note.data.updated ?? note.data.date }))
   ];
   const urls = pages
     .map(({ path, date }) => {

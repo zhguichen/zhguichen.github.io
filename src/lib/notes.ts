@@ -1,13 +1,25 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export type Note = CollectionEntry<'notes'>;
+export type Lang = 'en' | 'zh';
 
-export async function getPublishedNotes() {
-  const notes = await getCollection('notes', ({ data }) => !data.draft);
+export async function getPublishedNotes(lang?: Lang) {
+  const notes = await getCollection('notes', ({ data }) => {
+    if (data.draft) return false;
+    return lang ? data.lang === lang : true;
+  });
   return notes.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
-export function formatDate(date: Date) {
+export function formatDate(date: Date, lang: Lang = 'zh') {
+  if (lang === 'en') {
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+      timeZone: 'Asia/Shanghai'
+    }).format(date);
+  }
   return new Intl.DateTimeFormat('zh-CN', {
     year: 'numeric',
     month: '2-digit',
@@ -16,6 +28,13 @@ export function formatDate(date: Date) {
   })
     .format(date)
     .replaceAll('/', '.');
+}
+
+export function switchLanguage(pathname: string): string {
+  if (pathname === '/zh') return '/';
+  if (pathname.startsWith('/zh/')) return pathname.slice(3) || '/';
+  if (pathname === '/') return '/zh/';
+  return `/zh${pathname}`;
 }
 
 export function formatDateISO(date: Date) {

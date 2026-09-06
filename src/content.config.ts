@@ -2,10 +2,15 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const notes = defineCollection({
-  loader: glob({ base: './src/content/notes', pattern: '**/*.md' }),
+  loader: glob({
+    base: './src/content/notes',
+    pattern: '**/*.md',
+    generateId: ({ entry }) => entry.replace(/\.md$/, '')
+  }),
   schema: ({ image }) => z.object({
     title: z.string(),
     slug: z.string(),
+    lang: z.enum(['en', 'zh']).default('zh'),
     description: z.string(),
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),

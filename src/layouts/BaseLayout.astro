@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import type { ImageMetadata } from 'astro';
+import type { Lang } from '../lib/notes';
 
 interface Props {
   title?: string;
@@ -13,19 +14,26 @@ interface Props {
   tags?: string[];
   cover?: ImageMetadata;
   coverUrl?: string;
+  lang?: Lang;
 }
 
 const {
   title,
-  description = 'Jason 的个人笔记，记录技术、运动、生活与持续探索。',
+  description,
   article = false,
   publishedAt,
   updatedAt,
   tags = [],
   cover,
-  coverUrl
+  coverUrl,
+  lang = 'en'
 } = Astro.props;
 const siteName = "Jason's Notes";
+const defaultDescription =
+  lang === 'zh'
+    ? 'Jason 的个人笔记，记录技术、运动、生活与持续探索。'
+    : "Jason's personal notes on engineering, AI, and the things he keeps exploring.";
+const metaDescription = description ?? defaultDescription;
 const pageTitle = title ? `${title} — ${siteName}` : siteName;
 const shareTitle = title ?? siteName;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -37,7 +45,7 @@ const structuredData = article
       '@context': 'https://schema.org',
       '@type': 'BlogPosting',
       headline: title,
-      description,
+      description: metaDescription,
       image: [socialImage.href],
       datePublished: publishedAt?.toISOString(),
       dateModified: (updatedAt ?? publishedAt)?.toISOString(),
@@ -50,7 +58,7 @@ const structuredData = article
         '@type': 'WebPage',
         '@id': canonical.href
       },
-      inLanguage: 'zh-CN',
+      inLanguage: lang === 'zh' ? 'zh-CN' : 'en',
       keywords: tags
     }
   : {
@@ -58,18 +66,18 @@ const structuredData = article
       '@type': 'WebSite',
       name: siteName,
       url: new URL('/', Astro.site).href,
-      description,
-      inLanguage: 'zh-CN'
+      description: metaDescription,
+      inLanguage: lang === 'zh' ? 'zh-CN' : 'en'
     };
 ---
 
 <!doctype html>
-<html lang="zh-CN">
+<html lang={lang === 'zh' ? 'zh-CN' : 'en'}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="google-site-verification" content="nfMo_uAzeuHlQ-ARnZXN-XMpWGr_6zwF8kRdOYBHQ4k" />
-    <meta name="description" content={description} />
+    <meta name="description" content={metaDescription} />
     <meta name="theme-color" content="#0c0e11" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -100,11 +108,11 @@ const structuredData = article
   </head>
   <body>
     <div class="site-shell">
-      <Header />
+      <Header lang={lang} />
       <main id="content">
         <slot />
       </main>
-      <Footer />
+      <Footer lang={lang} />
     </div>
   </body>
 </html>

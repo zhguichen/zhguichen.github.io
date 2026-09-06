@@ -1,6 +1,7 @@
 ---
 title: 数学在算法中的运用
 slug: math-in-algorithms
+lang: zh
 description: 整理同余、欧几里得算法与裴蜀定理等竞赛中常用的数学工具。
 date: 2023-09-03T11:27:50+08:00
 topic: 算法

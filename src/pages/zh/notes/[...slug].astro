@@ -1,18 +1,18 @@
 ---
 import { render } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import NoteList from '../../components/NoteList.astro';
-import TagList from '../../components/TagList.astro';
-import { formatDate, getPublishedNotes, readingTime, relatedNotes } from '../../lib/notes';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import NoteList from '../../../components/NoteList.astro';
+import TagList from '../../../components/TagList.astro';
+import { formatDate, getPublishedNotes, readingTime, relatedNotes } from '../../../lib/notes';
 
 export async function getStaticPaths() {
-  const notes = await getPublishedNotes('en');
+  const notes = await getPublishedNotes('zh');
   return notes.map((note) => ({ params: { slug: note.data.slug }, props: { note } }));
 }
 
 const { note } = Astro.props;
 const { Content } = await render(note);
-const notes = await getPublishedNotes('en');
+const notes = await getPublishedNotes('zh');
 const related = relatedNotes(note, notes);
 ---
 
@@ -25,7 +25,7 @@ const related = relatedNotes(note, notes);
   tags={note.data.tags}
   cover={note.data.cover}
   coverUrl={note.data.coverUrl}
-  lang="en"
+  lang="zh"
 >
   <article class="article">
     <header class="article-header">
@@ -33,12 +33,12 @@ const related = relatedNotes(note, notes);
       <h1>{note.data.title}</h1>
       <p class="article-description">{note.data.description}</p>
       <div class="article-details">
-        <time datetime={note.data.date.toISOString()}>{formatDate(note.data.date, 'en')}</time>
+        <time datetime={note.data.date.toISOString()}>{formatDate(note.data.date, 'zh')}</time>
         <span aria-hidden="true">/</span>
-        <span>{readingTime(note)} min read</span>
-        {note.data.updated && <><span aria-hidden="true">/</span><span>Updated {formatDate(note.data.updated, 'en')}</span></>}
+        <span>{readingTime(note)} 分钟阅读</span>
+        {note.data.updated && <><span aria-hidden="true">/</span><span>更新于 {formatDate(note.data.updated, 'zh')}</span></>}
       </div>
-      <TagList tags={note.data.tags} lang="en" />
+      <TagList tags={note.data.tags} lang="zh" />
     </header>
     <div class="article-rule" aria-hidden="true"><span></span></div>
     <div class="prose"><Content /></div>
@@ -49,11 +49,11 @@ const related = relatedNotes(note, notes);
       <section class="related-section" aria-labelledby="related-title">
         <div class="section-heading">
           <div>
-            <p class="eyebrow"><span></span>Keep reading</p>
-            <h2 id="related-title">Related notes</h2>
+            <p class="eyebrow"><span></span>继续阅读</p>
+            <h2 id="related-title">相关笔记</h2>
           </div>
         </div>
-        <NoteList notes={related} compact lang="en" />
+        <NoteList notes={related} compact lang="zh" />
       </section>
     )
   }

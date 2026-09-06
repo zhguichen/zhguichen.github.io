@@ -1,18 +1,34 @@
 ---
+import { switchLanguage, type Lang } from '../lib/notes';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
 const path = Astro.url.pathname;
-const links = [
-  { href: '/', label: '首页' },
-  { href: '/notes/', label: '笔记' },
-  { href: '/about/', label: '关于' }
-];
+const links =
+  lang === 'zh'
+    ? [
+        { href: '/zh/', label: '首页' },
+        { href: '/zh/notes/', label: '笔记' },
+        { href: '/zh/about/', label: '关于' }
+      ]
+    : [
+        { href: '/', label: 'Home' },
+        { href: '/notes/', label: 'Notes' },
+        { href: '/about/', label: 'About' }
+      ];
+const switchTo = switchLanguage(path);
+const switchLabel = lang === 'zh' ? 'EN' : '中文';
 ---
 
 <header class="site-header">
-  <a class="brand" href="/" aria-label="Jason's Notes 首页">
+  <a class="brand" href={lang === 'zh' ? '/zh/' : '/'} aria-label="Jason's Notes">
     <span class="brand-overline">JASON'S</span>
     <strong>Jason's Notes</strong>
   </a>
-  <nav aria-label="主导航">
+  <nav aria-label={lang === 'zh' ? '主导航' : 'Main navigation'}>
     <ul class="site-nav">
       {
         links.map((link) => (
@@ -25,8 +41,11 @@ const links = [
       }
     </ul>
   </nav>
-  <a class="header-rss" href="/rss.xml">
-    <span aria-hidden="true">↗</span>
-    RSS
-  </a>
+  <div class="header-actions">
+    <a class="lang-switch" href={switchTo}>{switchLabel}</a>
+    <a class="header-rss" href={lang === 'zh' ? '/zh/rss.xml' : '/rss.xml'}>
+      <span aria-hidden="true">↗</span>
+      RSS
+    </a>
+  </div>
 </header>
