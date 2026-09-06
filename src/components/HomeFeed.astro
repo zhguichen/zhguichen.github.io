@@ -1,0 +1,65 @@
+---
+import type { Note } from '../lib/notes';
+import { readingTime } from '../lib/notes';
+import TagList from './TagList.astro';
+
+interface Props {
+  notes: Note[];
+}
+
+const { notes } = Astro.props;
+
+const formatters = {
+  en: {
+    month: new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'Asia/Shanghai' }),
+    day: new Intl.DateTimeFormat('en-US', { day: '2-digit', timeZone: 'Asia/Shanghai' }),
+    year: new Intl.DateTimeFormat('en-US', { year: 'numeric', timeZone: 'Asia/Shanghai' })
+  },
+  zh: {
+    month: new Intl.DateTimeFormat('zh-CN', { month: 'long', timeZone: 'Asia/Shanghai' }),
+    day: new Intl.DateTimeFormat('zh-CN', { day: 'numeric', timeZone: 'Asia/Shanghai' }),
+    year: new Intl.DateTimeFormat('zh-CN', { year: 'numeric', timeZone: 'Asia/Shanghai' })
+  }
+};
+
+const bySlug = new Map<string, Partial<Record<'en' | 'zh', Note>>>();
+for (const note of notes) {
+  if (!bySlug.has(note.data.slug)) bySlug.set(note.data.slug, {});
+  bySlug.get(note.data.slug)![note.data.lang] = note;
+}
+const groups = [...bySlug.values()].sort((a, b) => {
+  const ad = (a.en ?? a.zh)!.data.date;
+  const bd = (b.en ?? b.zh)!.data.date;
+  return bd.valueOf() - ad.valueOf();
+});
+const cards = groups.flatMap((g) => [g.en, g.zh].filter((n): n is Note => Boolean(n)));
+---
+
+<div class="post-feed">
+  {
+    cards.map((note) => {
+      const isEn = note.data.lang === 'en';
+      const base = isEn ? '/notes' : '/zh/notes';
+      const fmt = formatters[note.data.lang];
+      return (
+        <article class="feed">
+          <div class="feed-calendar" aria-hidden="true">
+            <span class="feed-calendar-month">{fmt.month.format(note.data.date)}</span>
+            <span class="feed-calendar-day">{fmt.day.format(note.data.date)}</span>
+          </div>
+          <div class="feed-body">
+            <h2 class="feed-title">
+              <a href={`${base}/${note.data.slug}/`}>{note.data.title}</a>
+            </h2>
+            <p class="feed-description">{note.data.description}</p>
+            <div class="feed-bottom">
+              <TagList tags={note.data.tags} lang={note.data.lang} />
+              <span class="feed-meta">{fmt.year.format(note.data.date)} · {readingTime(note)} {isEn ? 'min read' : '分钟阅读'}</span>
+            </div>
+          </div>
+          <span class="feed-icon" aria-hidden="true">→</span>
+        </article>
+      );
+    })
+  }
+</div>

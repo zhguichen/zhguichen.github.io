@@ -1,13 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getPublishedNotes, readingTime } from '../lib/notes';
-import TagList from '../components/TagList.astro';
+import HomeFeed from '../components/HomeFeed.astro';
+import { getPublishedNotes } from '../lib/notes';
 
-const notes = await getPublishedNotes('en');
-
-const monthFmt = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'Asia/Shanghai' });
-const dayFmt = new Intl.DateTimeFormat('en-US', { day: '2-digit', timeZone: 'Asia/Shanghai' });
-const yearFmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', timeZone: 'Asia/Shanghai' });
+const notes = await getPublishedNotes();
 ---
 
 <BaseLayout description="Jason's personal notes on engineering, AI, and the things he keeps exploring." lang="en">
@@ -20,26 +16,6 @@ const yearFmt = new Intl.DateTimeFormat('en-US', { year: 'numeric', timeZone: 'A
       </div>
     </div>
 
-    <div class="post-feed">
-      {notes.map((note) => (
-        <article class="feed">
-          <div class="feed-calendar" aria-hidden="true">
-            <span class="feed-calendar-month">{monthFmt.format(note.data.date)}</span>
-            <span class="feed-calendar-day">{dayFmt.format(note.data.date)}</span>
-          </div>
-          <div class="feed-body">
-            <h2 class="feed-title">
-              <a href={`/notes/${note.data.slug}/`}>{note.data.title}</a>
-            </h2>
-            <p class="feed-description">{note.data.description}</p>
-            <div class="feed-bottom">
-              <TagList tags={note.data.tags} lang="en" />
-              <span class="feed-meta">{yearFmt.format(note.data.date)} · {readingTime(note)} min read</span>
-            </div>
-          </div>
-          <span class="feed-icon" aria-hidden="true">→</span>
-        </article>
-      ))}
-    </div>
+    <HomeFeed notes={notes} />
   </section>
 </BaseLayout>
